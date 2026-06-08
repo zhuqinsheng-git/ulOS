@@ -12,51 +12,51 @@
 extern "C" {
 #endif
 
-/* ¶¨Ê±Æ÷ÃüÁîÀàĞÍ */
+/* å®šæ—¶å™¨å‘½ä»¤ç±»å‹ */
 typedef enum
 {
-    ULOS_TIMER_CMD_START = 0,     /* Æô¶¯¶¨Ê±Æ÷ */
-    ULOS_TIMER_CMD_STOP,          /* Í£Ö¹¶¨Ê±Æ÷ */
-    ULOS_TIMER_CMD_CHANGE_PERIOD, /* ¸Ä±äÖÜÆÚ */
-    ULOS_TIMER_CMD_RESET,         /* ÖØÖÃ¶¨Ê±Æ÷ */
-    ULOS_TIMER_CMD_DELETE         /* É¾³ı¶¨Ê±Æ÷ */
+    ULOS_TIMER_CMD_START = 0,     /* å¯åŠ¨å®šæ—¶å™¨ */
+    ULOS_TIMER_CMD_STOP,          /* åœæ­¢å®šæ—¶å™¨ */
+    ULOS_TIMER_CMD_CHANGE_PERIOD, /* æ”¹å˜å‘¨æœŸ */
+    ULOS_TIMER_CMD_RESET,         /* é‡ç½®å®šæ—¶å™¨ */
+    ULOS_TIMER_CMD_DELETE         /* åˆ é™¤å®šæ—¶å™¨ */
 } ul_timer_cmd_t;
 
-/* ¶¨Ê±Æ÷ÀàĞÍ¶¨Òå */
-#define ULOS_TIMER_TYPE_ONESHOT     0x00    /* µ¥´Î¶¨Ê±Æ÷ */
-#define ULOS_TIMER_TYPE_PERIODIC    0x01    /* ÖÜÆÚĞÔ¶¨Ê±Æ÷ */
+/* å®šæ—¶å™¨ç±»å‹å®šä¹‰ */
+#define ULOS_TIMER_TYPE_ONESHOT     0x00    /* å•æ¬¡å®šæ—¶å™¨ */
+#define ULOS_TIMER_TYPE_PERIODIC    0x01    /* å‘¨æœŸæ€§å®šæ—¶å™¨ */
 
-/* ¶¨Ê±Æ÷×´Ì¬¶¨Òå */
-#define ULOS_TIMER_STAT_STOPPED     0x00    /* Í£Ö¹×´Ì¬ */
-#define ULOS_TIMER_STAT_STARTED     0x01    /* Æô¶¯×´Ì¬ */
+/* å®šæ—¶å™¨çŠ¶æ€å®šä¹‰ */
+#define ULOS_TIMER_STAT_STOPPED     0x00    /* åœæ­¢çŠ¶æ€ */
+#define ULOS_TIMER_STAT_STARTED     0x01    /* å¯åŠ¨çŠ¶æ€ */
 
 /**
- * @brief ¶¨Ê±Æ÷»Øµ÷º¯ÊıÀàĞÍ
+ * @brief å®šæ—¶å™¨å›è°ƒå‡½æ•°ç±»å‹
  */
 typedef void (*ul_timer_callback_t)(void *parameter);
 
 /**
- * @brief ¶¨Ê±Æ÷¿ØÖÆ¿é
+ * @brief å®šæ—¶å™¨æ§åˆ¶å—
  */
 typedef struct ul_timer
 {
-    ul_object_t parent;                /* ¼Ì³Ğ×Ô¶ÔÏó»ùÀà */
-    ul_list_t node;                    /* Á´±í½Úµã */
+    ul_object_t parent;                /* ç»§æ‰¿è‡ªå¯¹è±¡åŸºç±» */
+    ul_list_t node;                    /* é“¾è¡¨èŠ‚ç‚¹ */
 
-    ul_tick_t timeout_tick;            /* ³¬Ê±½ÚÅÄÊı */
-    ul_tick_t init_tick;              /* ³õÊ¼½ÚÅÄÊı */
+    ul_tick_t timeout_tick;            /* è¶…æ—¶èŠ‚æ‹æ•° */
+    ul_tick_t init_tick;              /* åˆå§‹èŠ‚æ‹æ•° */
 
-    ul_uint8_t type;            /* ¶¨Ê±Æ÷ÀàĞÍ */
-    ul_uint8_t stat;           /* ¶¨Ê±Æ÷×´Ì¬ */
+    ul_uint8_t type;            /* å®šæ—¶å™¨ç±»å‹ */
+    ul_uint8_t stat;           /* å®šæ—¶å™¨çŠ¶æ€ */
 
-    ul_timer_callback_t callback;     /* ¶¨Ê±Æ÷»Øµ÷º¯Êı */
-    void *parameter;                  /* »Øµ÷º¯Êı²ÎÊı */
+    ul_timer_callback_t callback;     /* å®šæ—¶å™¨å›è°ƒå‡½æ•° */
+    void *parameter;                  /* å›è°ƒå‡½æ•°å‚æ•° */
 } ul_timer_t;
 
-/* ==================== ¶¨Ê±Æ÷²Ù×÷º¯Êı ==================== */
+/* ==================== å®šæ—¶å™¨æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯¶¨Ê±Æ÷
+ * @brief åˆå§‹åŒ–å®šæ—¶å™¨
  */
 ul_ecode ul_timer_init(ul_timer_t *timer,
                        const char *name,
@@ -66,7 +66,7 @@ ul_ecode ul_timer_init(ul_timer_t *timer,
                        ul_uint8_t type);
 
 /**
- * @brief ´´½¨¶¨Ê±Æ÷
+ * @brief åˆ›å»ºå®šæ—¶å™¨
  */
 ul_timer_t* ul_timer_create(const char *name,
                             ul_timer_callback_t callback,
@@ -75,32 +75,32 @@ ul_timer_t* ul_timer_create(const char *name,
                             ul_uint8_t type);
 
 /**
- * @brief É¾³ı¶¨Ê±Æ÷
+ * @brief åˆ é™¤å®šæ—¶å™¨
  */
 ul_ecode ul_timer_delete(ul_timer_t *timer);
 
 /**
- * @brief Æô¶¯¶¨Ê±Æ÷
+ * @brief å¯åŠ¨å®šæ—¶å™¨
  */
 ul_ecode ul_timer_start(ul_timer_t *timer);
 
 /**
- * @brief Í£Ö¹¶¨Ê±Æ÷
+ * @brief åœæ­¢å®šæ—¶å™¨
  */
 ul_ecode ul_timer_stop(ul_timer_t *timer);
 
 /**
- * @brief ÖØÖÃ¶¨Ê±Æ÷
+ * @brief é‡ç½®å®šæ—¶å™¨
  */
 ul_ecode ul_timer_reset(ul_timer_t *timer);
 
 /**
- * @brief ¸Ä±ä¶¨Ê±Æ÷ÖÜÆÚ
+ * @brief æ”¹å˜å®šæ—¶å™¨å‘¨æœŸ
  */
 ul_ecode ul_timer_change_period(ul_timer_t *timer, ul_tick_t new_period);
 
 /**
- * @brief ³õÊ¼»¯¶¨Ê±Æ÷·şÎñ
+ * @brief åˆå§‹åŒ–å®šæ—¶å™¨æœåŠ¡
  */
 ul_ecode ul_timer_thread_create(void);
 

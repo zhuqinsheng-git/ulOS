@@ -5,7 +5,7 @@
  */
 #include "ul_heap.h"
 
-/* ÄÚ´æ¶ÔÆëÅäÖÃ */
+/* å†…å­˜å¯¹é½é…ç½® */
 #define HEAP_ALIGNMENT          ( 8 )
 
 #define MEM_ALIGN_SIZE(size)    (((size) + HEAP_ALIGNMENT - 1) & ~(HEAP_ALIGNMENT - 1))
@@ -22,48 +22,48 @@
         do{if (g_heap_manager.end_addr == UL_NULL)\
                     _heap_init();}while(0)
     
-/* ¶Ñ */
+/* å † */
 static uint8_t g_heap[UL_HEAP_SIZE];
 
-/* ÄÚ´æ¿éÍ·²¿½á¹¹ */
+/* å†…å­˜å—å¤´éƒ¨ç»“æ„ */
 typedef struct memblock
 {
-    struct memblock *next;      /* ÏÂÒ»¸ö¿ÕÏĞ¿é */
-    ul_size_t       size;       /* ¿é´óĞ¡£¨°üº¬Í·²¿£© */
+    struct memblock *next;      /* ä¸‹ä¸€ä¸ªç©ºé—²å— */
+    ul_size_t       size;       /* å—å¤§å°ï¼ˆåŒ…å«å¤´éƒ¨ï¼‰ */
 } ul_memblock_t;
 
-/* ¶Ñ¹ÜÀí½á¹¹ */
+/* å †ç®¡ç†ç»“æ„ */
 typedef struct ul_heap_manager
 {
-    ul_uint8_t      *start_addr;     /* ¶ÑÆğÊ¼µØÖ· */
-    ul_uint8_t      *end_addr;       /* ¶Ñ½áÊøµØÖ· */
-    ul_size_t       total_size;      /* ×Ü´óĞ¡ */
-    ul_size_t       used_size;       /* ÒÑÊ¹ÓÃ´óĞ¡ */
-    ul_size_t       max_used_size;   /* ×î´óÊ¹ÓÃ´óĞ¡ */
-    ul_memblock_t   *free_list;      /* ¿ÕÏĞÁ´±í */
+    ul_uint8_t      *start_addr;     /* å †èµ·å§‹åœ°å€ */
+    ul_uint8_t      *end_addr;       /* å †ç»“æŸåœ°å€ */
+    ul_size_t       total_size;      /* æ€»å¤§å° */
+    ul_size_t       used_size;       /* å·²ä½¿ç”¨å¤§å° */
+    ul_size_t       max_used_size;   /* æœ€å¤§ä½¿ç”¨å¤§å° */
+    ul_memblock_t   *free_list;      /* ç©ºé—²é“¾è¡¨ */
 
-    /* Í³¼ÆĞÅÏ¢ */
-    ul_uint32_t     alloc_count;     /* ·ÖÅä´ÎÊı */
-    ul_uint32_t     free_count;      /* ÊÍ·Å´ÎÊı */
-    ul_uint32_t     alloc_fail_count;/* ·ÖÅäÊ§°Ü´ÎÊı */
+    /* ç»Ÿè®¡ä¿¡æ¯ */
+    ul_uint32_t     alloc_count;     /* åˆ†é…æ¬¡æ•° */
+    ul_uint32_t     free_count;      /* é‡Šæ”¾æ¬¡æ•° */
+    ul_uint32_t     alloc_fail_count;/* åˆ†é…å¤±è´¥æ¬¡æ•° */
 } ul_heap_manager_t;
 static struct ul_heap_manager g_heap_manager;
 
 /**
- * @brief ¶Ñ³õÊ¼»¯
+ * @brief å †åˆå§‹åŒ–
  *
- * ³õÊ¼»¯¶Ñ¹ÜÀí½á¹¹£¬´´½¨³õÊ¼¿ÕÏĞ¿é£º
- * - ÉèÖÃ¶Ñ±ß½ç
- * - ³õÊ¼»¯Í³¼ÆĞÅÏ¢
- * - ´´½¨³õÊ¼¿ÕÏĞ¿é
+ * åˆå§‹åŒ–å †ç®¡ç†ç»“æ„ï¼Œåˆ›å»ºåˆå§‹ç©ºé—²å—ï¼š
+ * - è®¾ç½®å †è¾¹ç•Œ
+ * - åˆå§‹åŒ–ç»Ÿè®¡ä¿¡æ¯
+ * - åˆ›å»ºåˆå§‹ç©ºé—²å—
  *
- * @note ÎŞĞèÓÃ»§µ÷ÓÃ
+ * @note æ— éœ€ç”¨æˆ·è°ƒç”¨
  */
 static void _heap_init(void)
 {
     uint8_t *heap_start = (uint8_t*)g_heap;
 
-    /* ³õÊ¼»¯¶Ñ½á¹¹ */
+    /* åˆå§‹åŒ–å †ç»“æ„ */
     g_heap_manager.start_addr = heap_start;
     g_heap_manager.total_size = UL_HEAP_SIZE;
     g_heap_manager.end_addr = heap_start + UL_HEAP_SIZE;
@@ -73,21 +73,21 @@ static void _heap_init(void)
     g_heap_manager.free_count = 0;
     g_heap_manager.alloc_fail_count = 0;
 
-    /* ³õÊ¼»¯µÚÒ»¸ö´ó¿ÕÏĞ¿é */
+    /* åˆå§‹åŒ–ç¬¬ä¸€ä¸ªå¤§ç©ºé—²å— */
     ul_memblock_t *first_block = (ul_memblock_t *)heap_start;
     first_block->size = UL_HEAP_SIZE;
     first_block->next = UL_NULL;
 
     g_heap_manager.free_list = first_block;
 
-    /* ÄÚ´æÆÁÕÏ£¬È·±£Êı¾İĞ´ÈëÍê³É */
+    /* å†…å­˜å±éšœï¼Œç¡®ä¿æ•°æ®å†™å…¥å®Œæˆ */
     __dsb(0xF);
 }
 
 /**
- * @brief ´Ó¶Ñ·ÖÅäÄÚ´æ
- * @param size ĞèÒª·ÖÅäµÄÄÚ´æ´óĞ¡£¨×Ö½Ú£©
- * @return ³É¹¦·µ»Ø·ÖÅäµÄÄÚ´æÖ¸Õë£¬Ê§°Ü·µ»ØNULL
+ * @brief ä»å †åˆ†é…å†…å­˜
+ * @param size éœ€è¦åˆ†é…çš„å†…å­˜å¤§å°ï¼ˆå­—èŠ‚ï¼‰
+ * @return æˆåŠŸè¿”å›åˆ†é…çš„å†…å­˜æŒ‡é’ˆï¼Œå¤±è´¥è¿”å›NULL
  */
 void *ul_malloc(ul_size_t size)
 {
@@ -97,7 +97,7 @@ void *ul_malloc(ul_size_t size)
         return UL_NULL;
     }
 
-    /* ¼ÆËãĞèÒª·ÖÅäµÄ×Ü´óĞ¡£¨°üÀ¨Í·²¿ºÍ¶ÔÆë£© */
+    /* è®¡ç®—éœ€è¦åˆ†é…çš„æ€»å¤§å°ï¼ˆåŒ…æ‹¬å¤´éƒ¨å’Œå¯¹é½ï¼‰ */
     ul_size_t total_size = MEM_BLOCK_HEADER_SIZE + MEM_ALIGN_SIZE(size);
 
     ul_memblock_t *prev_block = UL_NULL;
@@ -105,12 +105,12 @@ void *ul_malloc(ul_size_t size)
     ul_memblock_t *best_prev = UL_NULL;
     ul_memblock_t *best_block = UL_NULL;
 
-    /* Ê¹ÓÃ×î¼ÑÊÊÅäËã·¨²éÕÒºÏÊÊµÄ¿ÕÏĞ¿é */
+    /* ä½¿ç”¨æœ€ä½³é€‚é…ç®—æ³•æŸ¥æ‰¾åˆé€‚çš„ç©ºé—²å— */
     while (curr_block != UL_NULL)
     {
         if (curr_block->size >= total_size)
         {
-            /* ÕÒµ½ºÏÊÊµÄ¿é£¬¼ì²éÊÇ·ñÊÇ×î¼ÑÑ¡Ôñ */
+            /* æ‰¾åˆ°åˆé€‚çš„å—ï¼Œæ£€æŸ¥æ˜¯å¦æ˜¯æœ€ä½³é€‰æ‹© */
             if (best_block == UL_NULL || curr_block->size < best_block->size)
             {
                 best_block = curr_block;
@@ -122,46 +122,46 @@ void *ul_malloc(ul_size_t size)
         curr_block = curr_block->next;
     }
 
-    /* Ã»ÓĞÕÒµ½ºÏÊÊµÄ¿é */
+    /* æ²¡æœ‰æ‰¾åˆ°åˆé€‚çš„å— */
     if (best_block == UL_NULL)
     {
         g_heap_manager.alloc_fail_count++;
         return UL_NULL;
     }
 
-    /* ¼ÆËãÊ£Óà¿Õ¼äÊÇ·ñ×ã¹»ĞÎ³ÉĞÂµÄ¿ÕÏĞ¿é */
+    /* è®¡ç®—å‰©ä½™ç©ºé—´æ˜¯å¦è¶³å¤Ÿå½¢æˆæ–°çš„ç©ºé—²å— */
     ul_size_t remaining_size = best_block->size - total_size;
 
     if (remaining_size > MEM_BLOCK_HEADER_SIZE)
     {
-        /* ·Ö¸î¿é£º´´½¨ĞÂµÄ¿ÕÏĞ¿é */
+        /* åˆ†å‰²å—ï¼šåˆ›å»ºæ–°çš„ç©ºé—²å— */
         ul_memblock_t *new_free_block = (ul_memblock_t *)((uint8_t *)best_block + total_size);
         new_free_block->size = remaining_size;
         new_free_block->next = best_block->next;
 
-        /* ¸üĞÂÁ´±í */
+        /* æ›´æ–°é“¾è¡¨ */
         if (best_prev != UL_NULL)
         {
-            /* ³¡¾°£º×î¼Ñ¿éÔÚÁ´±íÖĞ¼ä
-               free_list ¡ú [Block1] ¡ú [Block2: size=200] ¡ú [Block3] ¡ú UL_NULL
+            /* åœºæ™¯ï¼šæœ€ä½³å—åœ¨é“¾è¡¨ä¸­é—´
+               free_list â†’ [Block1] â†’ [Block2: size=200] â†’ [Block3] â†’ UL_NULL
                best_prev    best_block */
             best_prev->next = new_free_block;
         }
         else
         {
-            /* ³¡¾°£º×î¼Ñ¿éÔÚÁ´±íÍ·²¿
-             free_list ¡ú [Block1: size=200] ¡ú [Block2] ¡ú UL_NULL
+            /* åœºæ™¯ï¼šæœ€ä½³å—åœ¨é“¾è¡¨å¤´éƒ¨
+             free_list â†’ [Block1: size=200] â†’ [Block2] â†’ UL_NULL
                            best_block
                            best_prev = UL_NULL */
             g_heap_manager.free_list = new_free_block;
         }
 
-        /* ¸üĞÂ·ÖÅä¿éµÄ´óĞ¡ */
+        /* æ›´æ–°åˆ†é…å—çš„å¤§å° */
         best_block->size = total_size;
     }
     else
     {
-        /* ²»·Ö¸î£¬Õû¸ö¿é¶¼·ÖÅä³öÈ¥ */
+        /* ä¸åˆ†å‰²ï¼Œæ•´ä¸ªå—éƒ½åˆ†é…å‡ºå» */
         if (best_prev != UL_NULL)
         {
             best_prev->next = best_block->next;
@@ -172,7 +172,7 @@ void *ul_malloc(ul_size_t size)
         }
     }
 
-    /* ¸üĞÂÍ³¼ÆĞÅÏ¢ */
+    /* æ›´æ–°ç»Ÿè®¡ä¿¡æ¯ */
     g_heap_manager.used_size += best_block->size;
     g_heap_manager.alloc_count++;
 
@@ -181,13 +181,13 @@ void *ul_malloc(ul_size_t size)
         g_heap_manager.max_used_size = g_heap_manager.used_size;
     }
 
-    /* ·µ»ØÓÃ»§¿ÉÓÃÄÚ´æµØÖ·£¨Ìø¹ıÍ·²¿£© */
+    /* è¿”å›ç”¨æˆ·å¯ç”¨å†…å­˜åœ°å€ï¼ˆè·³è¿‡å¤´éƒ¨ï¼‰ */
     return (uint8_t *)best_block + MEM_BLOCK_HEADER_SIZE;
 }
 
 /**
- * @brief ÊÍ·ÅÄÚ´æµ½¶Ñ
- * @param ptr ÒªÊÍ·ÅµÄÄÚ´æÖ¸Õë
+ * @brief é‡Šæ”¾å†…å­˜åˆ°å †
+ * @param ptr è¦é‡Šæ”¾çš„å†…å­˜æŒ‡é’ˆ
  */
 void ul_free(void *ptr)
 {
@@ -197,7 +197,7 @@ void ul_free(void *ptr)
         return;
     }
 
-    /* »ñÈ¡¿éÍ·²¿ */
+    /* è·å–å—å¤´éƒ¨ */
     ul_memblock_t *free_block = (ul_memblock_t *)((uint8_t *)ptr - MEM_BLOCK_HEADER_SIZE);
 
     if (!IS_VALID_BLOCK(free_block))
@@ -210,80 +210,80 @@ void ul_free(void *ptr)
     ul_memblock_t *curr_block = g_heap_manager.free_list;
     ul_memblock_t *prev_block = UL_NULL;
 
-    /* ÕÒµ½²åÈëÎ»ÖÃ£¨°´µØÖ·ÅÅĞò£© */
-    // ÎªÁËÕÒµ½ÒªÊÍ·ÅµÄÄÚ´æµÄ×î½üµÄÇ°ºó¿ÕÏĞÄÚ´æ£¨Ö»ÊÇ×î½üµÄ£¬²»´ú±íÏàÁÚµÄ¾ÍÊÇ¿ÕÏĞÄÚ´æ£©
-    //    ÄÚ´æ²¼¾Ö£º
+    /* æ‰¾åˆ°æ’å…¥ä½ç½®ï¼ˆæŒ‰åœ°å€æ’åºï¼‰ */
+    // ä¸ºäº†æ‰¾åˆ°è¦é‡Šæ”¾çš„å†…å­˜çš„æœ€è¿‘çš„å‰åç©ºé—²å†…å­˜ï¼ˆåªæ˜¯æœ€è¿‘çš„ï¼Œä¸ä»£è¡¨ç›¸é‚»çš„å°±æ˜¯ç©ºé—²å†…å­˜ï¼‰
+    //    å†…å­˜å¸ƒå±€ï¼š
     //+-------+------+-------+------+
     //| Free1 | Used | Free2 | Used |
     //+-------+------+-------+------+
-    //   ¡ü      ¡ü      ¡ü
-    //  prev   ÒªÊÍ·Å   curr
+    //   â†‘      â†‘      â†‘
+    //  prev   è¦é‡Šæ”¾   curr
     while (curr_block != UL_NULL && curr_block < free_block)
     {
         prev_block = curr_block;
         curr_block = curr_block->next;
     }
 
-    /* ³¢ÊÔÏòÇ°ºÏ²¢ */
+    /* å°è¯•å‘å‰åˆå¹¶ */
     if (prev_block != UL_NULL)
     {
-        /* 1.ÕÒµ½Ç°Ãæ×î½üµÄ¿ÕÏĞ¿éµÄÏÂÒ»¸ö¿é */
+        /* 1.æ‰¾åˆ°å‰é¢æœ€è¿‘çš„ç©ºé—²å—çš„ä¸‹ä¸€ä¸ªå— */
         uint8_t *prev_end = (uint8_t *)prev_block + prev_block->size;
 
-        /* 2.ÅĞ¶ÏÕâ¸ö¿éÊÇ²»ÊÇ¿ÕÏĞ¿é */
+        /* 2.åˆ¤æ–­è¿™ä¸ªå—æ˜¯ä¸æ˜¯ç©ºé—²å— */
         if (prev_end == (uint8_t *)free_block)
         {
-            /* 3.ÊÇ£ººÏ²¢Ç°Ò»¸ö¿é */
+            /* 3.æ˜¯ï¼šåˆå¹¶å‰ä¸€ä¸ªå— */
             prev_block->size += free_block->size;
             free_block = prev_block;
         }
         else
         {
-            /* 4.²»ÊÇ£º²»ÄÜÏòÇ°ºÏ²¢£¬²åÈëµ½¿ÕÏĞÁ´±íÖĞ */
+            /* 4.ä¸æ˜¯ï¼šä¸èƒ½å‘å‰åˆå¹¶ï¼Œæ’å…¥åˆ°ç©ºé—²é“¾è¡¨ä¸­ */
             prev_block->next = free_block;
             free_block->next = curr_block;
         }
     }
     else
     {
-        /* ÒÑÓÃ¿éÊÇµÚÒ»¸ö¿é£¬ÎŞ·¨ÏòÇ°ºÏ²¢£¬Ö»ÄÜ²åÈëµ½Á´±íÍ·²¿ */
+        /* å·²ç”¨å—æ˜¯ç¬¬ä¸€ä¸ªå—ï¼Œæ— æ³•å‘å‰åˆå¹¶ï¼Œåªèƒ½æ’å…¥åˆ°é“¾è¡¨å¤´éƒ¨ */
         free_block->next = g_heap_manager.free_list;
         g_heap_manager.free_list = free_block;
     }
 
-    /* ³¢ÊÔÏòºóºÏ²¢ */
+    /* å°è¯•å‘ååˆå¹¶ */
     if (curr_block != UL_NULL)
     {
-        /* 1.ÕÒµ½ÏÂÒ»¸ö¿é */
+        /* 1.æ‰¾åˆ°ä¸‹ä¸€ä¸ªå— */
         uint8_t *free_end = (uint8_t *)free_block + free_block->size;
 
-        /* 2.ÊÇ¿ÕÏĞ¿é */
+        /* 2.æ˜¯ç©ºé—²å— */
         if (free_end == (uint8_t *)curr_block)
         {
-            /* ºÏ²¢ºóÒ»¸ö¿é */
+            /* åˆå¹¶åä¸€ä¸ªå— */
             free_block->size += curr_block->size;
             free_block->next = curr_block->next;
         }
     }
 
-    /* ¸üĞÂÍ³¼ÆĞÅÏ¢ */
+    /* æ›´æ–°ç»Ÿè®¡ä¿¡æ¯ */
     g_heap_manager.used_size -= free_size;
     g_heap_manager.free_count++;
 }
 
 /**
- * @brief ÖØĞÂ·ÖÅäÄÚ´æ´óĞ¡
+ * @brief é‡æ–°åˆ†é…å†…å­˜å¤§å°
  *
- * ÖØĞÂ·ÖÅäÄÚ´æ´óĞ¡£º
- * 1. Èç¹ûptrÎªNULL£¬µÈÍ¬ÓÚmalloc
- * 2. Èç¹ûsizeÎª0£¬µÈÍ¬ÓÚfree
- * 3. Èç¹ûĞÂ´óĞ¡Ğ¡ÓÚµÈÓÚÔ­´óĞ¡£¬Ö±½Ó·µ»ØÔ­Ö¸Õë
- * 4. ·ñÔò·ÖÅäĞÂÄÚ´æ²¢¸´ÖÆÊı¾İ
+ * é‡æ–°åˆ†é…å†…å­˜å¤§å°ï¼š
+ * 1. å¦‚æœpträ¸ºNULLï¼Œç­‰åŒäºmalloc
+ * 2. å¦‚æœsizeä¸º0ï¼Œç­‰åŒäºfree
+ * 3. å¦‚æœæ–°å¤§å°å°äºç­‰äºåŸå¤§å°ï¼Œç›´æ¥è¿”å›åŸæŒ‡é’ˆ
+ * 4. å¦åˆ™åˆ†é…æ–°å†…å­˜å¹¶å¤åˆ¶æ•°æ®
  *
- * @param ptr Ô­ÄÚ´æÖ¸Õë
- * @param size ĞÂµÄÄÚ´æ´óĞ¡
- * @return ³É¹¦·µ»ØĞÂÄÚ´æÖ¸Õë£¬Ê§°Ü·µ»ØNULL
- * @note Ô­ÄÚ´æÖ¸ÕëÔÚ³É¹¦ÖØ·ÖÅäºó»áÊ§Ğ§
+ * @param ptr åŸå†…å­˜æŒ‡é’ˆ
+ * @param size æ–°çš„å†…å­˜å¤§å°
+ * @return æˆåŠŸè¿”å›æ–°å†…å­˜æŒ‡é’ˆï¼Œå¤±è´¥è¿”å›NULL
+ * @note åŸå†…å­˜æŒ‡é’ˆåœ¨æˆåŠŸé‡åˆ†é…åä¼šå¤±æ•ˆ
  */
 void *ul_realloc(void *ptr, ul_size_t size)
 {
@@ -299,24 +299,24 @@ void *ul_realloc(void *ptr, ul_size_t size)
         return UL_NULL;
     }
 
-    /* »ñÈ¡Ô­¿éĞÅÏ¢ */
+    /* è·å–åŸå—ä¿¡æ¯ */
     ul_memblock_t *old_block = (ul_memblock_t *)((uint8_t *)ptr - MEM_BLOCK_HEADER_SIZE);
     ul_size_t old_size = old_block->size - MEM_BLOCK_HEADER_SIZE;
 
-    /* Èç¹ûĞÂ´óĞ¡Ğ¡ÓÚµÈÓÚÔ­´óĞ¡£¬Ö±½Ó·µ»ØÔ­Ö¸Õë */
+    /* å¦‚æœæ–°å¤§å°å°äºç­‰äºåŸå¤§å°ï¼Œç›´æ¥è¿”å›åŸæŒ‡é’ˆ */
     if (size <= old_size)
     {
         return ptr;
     }
 
-    /* ·ÖÅäĞÂÄÚ´æ */
+    /* åˆ†é…æ–°å†…å­˜ */
     void *new_ptr = ul_malloc(size);
 
     if (new_ptr != UL_NULL)
     {
-        /* ¿½±´Êı¾İ */
+        /* æ‹·è´æ•°æ® */
         memcpy(new_ptr, ptr, old_size);
-        /* ÊÍ·ÅÔ­ÄÚ´æ */
+        /* é‡Šæ”¾åŸå†…å­˜ */
         ul_free(ptr);
     }
 
@@ -324,9 +324,9 @@ void *ul_realloc(void *ptr, ul_size_t size)
 }
 
 /**
- * @brief »ñÈ¡¶Ñ×Ü´óĞ¡
+ * @brief è·å–å †æ€»å¤§å°
  *
- * @return ¶Ñ×Ü´óĞ¡£¨×Ö½Ú£©
+ * @return å †æ€»å¤§å°ï¼ˆå­—èŠ‚ï¼‰
  */
 ul_size_t ul_heap_get_total_size(void)
 {
@@ -334,9 +334,9 @@ ul_size_t ul_heap_get_total_size(void)
 }
 
 /**
- * @brief »ñÈ¡ÒÑÊ¹ÓÃ´óĞ¡
+ * @brief è·å–å·²ä½¿ç”¨å¤§å°
  *
- * @return µ±Ç°ÒÑÊ¹ÓÃµÄÄÚ´æ´óĞ¡£¨×Ö½Ú£©
+ * @return å½“å‰å·²ä½¿ç”¨çš„å†…å­˜å¤§å°ï¼ˆå­—èŠ‚ï¼‰
  */
 ul_size_t ul_heap_get_used_size(void)
 {
@@ -344,9 +344,9 @@ ul_size_t ul_heap_get_used_size(void)
 }
 
 /**
- * @brief »ñÈ¡¿ÕÏĞ´óĞ¡
+ * @brief è·å–ç©ºé—²å¤§å°
  *
- * @return µ±Ç°¿ÕÏĞµÄÄÚ´æ´óĞ¡£¨×Ö½Ú£©
+ * @return å½“å‰ç©ºé—²çš„å†…å­˜å¤§å°ï¼ˆå­—èŠ‚ï¼‰
  */
 ul_size_t ul_heap_get_free_size(void)
 {
@@ -354,9 +354,9 @@ ul_size_t ul_heap_get_free_size(void)
 }
 
 /**
- * @brief »ñÈ¡×î´óÊ¹ÓÃ´óĞ¡
+ * @brief è·å–æœ€å¤§ä½¿ç”¨å¤§å°
  *
- * @return ÀúÊ·×î´óÊ¹ÓÃµÄÄÚ´æ´óĞ¡£¨×Ö½Ú£©
+ * @return å†å²æœ€å¤§ä½¿ç”¨çš„å†…å­˜å¤§å°ï¼ˆå­—èŠ‚ï¼‰
  */
 ul_size_t ul_heap_get_max_used_size(void)
 {
@@ -364,7 +364,7 @@ ul_size_t ul_heap_get_max_used_size(void)
 }
 
 /**
- * @brief »ñÈ¡·ÖÅäÊ§°Ü´ÎÊı
+ * @brief è·å–åˆ†é…å¤±è´¥æ¬¡æ•°
  */
 ul_uint32_t ul_heap_get_alloc_fail_count(void)
 {
@@ -372,13 +372,13 @@ ul_uint32_t ul_heap_get_alloc_fail_count(void)
 }
 
 /**
- * @brief ´òÓ¡¶Ñ×´Ì¬ĞÅÏ¢
+ * @brief æ‰“å°å †çŠ¶æ€ä¿¡æ¯
  *
- * ´òÓ¡ÏêÏ¸µÄ¶ÑĞÅÏ¢£º
- * - ×ÜÌåÊ¹ÓÃÇé¿ö£¨°üº¬°Ù·Ö±È£©
- * - ËùÓĞÄÚ´æ¿éµÄ×´Ì¬£¨µØÖ·¡¢´óĞ¡¡¢°Ù·Ö±È£©
- * - ¿ÕÏĞÁ´±í½á¹¹
- * - Í³¼ÆĞÅÏ¢£¨·ÖÅä´ÎÊı¡¢ÊÍ·Å´ÎÊı¡¢Ê§°Ü´ÎÊı£©
+ * æ‰“å°è¯¦ç»†çš„å †ä¿¡æ¯ï¼š
+ * - æ€»ä½“ä½¿ç”¨æƒ…å†µï¼ˆåŒ…å«ç™¾åˆ†æ¯”ï¼‰
+ * - æ‰€æœ‰å†…å­˜å—çš„çŠ¶æ€ï¼ˆåœ°å€ã€å¤§å°ã€ç™¾åˆ†æ¯”ï¼‰
+ * - ç©ºé—²é“¾è¡¨ç»“æ„
+ * - ç»Ÿè®¡ä¿¡æ¯ï¼ˆåˆ†é…æ¬¡æ•°ã€é‡Šæ”¾æ¬¡æ•°ã€å¤±è´¥æ¬¡æ•°ï¼‰
  */
 void ul_heap_print(void)
 {
@@ -407,7 +407,7 @@ void ul_heap_print(void)
     {
         ul_memblock_t *block = (ul_memblock_t *)current;
 
-        // ¼ì²éµ±Ç°¿éÊÇ·ñÔÚ¿ÕÏĞÁ´±íÖĞ
+        // æ£€æŸ¥å½“å‰å—æ˜¯å¦åœ¨ç©ºé—²é“¾è¡¨ä¸­
         int is_free = 0;
         ul_memblock_t *temp = free_block;
 
@@ -422,14 +422,14 @@ void ul_heap_print(void)
             temp = temp->next;
         }
 
-        // ´òÓ¡¿éĞÅÏ¢
+        // æ‰“å°å—ä¿¡æ¯
         printf("0x%08X\t%zu\t\t%.1f%%\t%s\r\n",
                (uint32_t)current,
                block->size,
                (float)block->size * 100 / total,
                is_free ? "FREE" : "USED");
 
-        // ÒÆ¶¯µ½ÏÂÒ»¸ö¿é
+        // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå—
         current += block->size;
     }
 

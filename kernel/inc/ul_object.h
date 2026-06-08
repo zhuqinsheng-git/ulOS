@@ -53,7 +53,7 @@ typedef enum
     UL_OBJECT_CLASS_MAX
 } ul_object_class_type;
     
-// 对象基类
+// 瀵硅薄鍩虹被
 typedef struct ul_object 
 {
     char                        name[UL_OBJECT_NAME_MAX_LENGTH];
@@ -62,7 +62,7 @@ typedef struct ul_object
     ul_list_t                   node;
 } ul_object_t;
 
-// 对象管理接口
+// 瀵硅薄绠＄悊鎺ュ彛
 ul_ecode ul_object_init(const char* name, ul_object_t* object, ul_object_class_type type);
 ul_ecode ul_object_unregister(ul_object_t* object);
 ul_object_t* ul_object_find(const char* name, ul_object_class_type type);

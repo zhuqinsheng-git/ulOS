@@ -18,14 +18,14 @@ extern void _thread_insert_ready_list(struct ul_thread *thread);
 extern void _thread_remove_ready_list(struct ul_thread *thread);
 extern void _update_next_wake_time(void);
 
-/* Ïß³Ì»½ÐÑº¯Êý */
+/* çº¿ç¨‹å”¤é†’å‡½æ•° */
 static void _ipc_wakeup_first_receiver(ul_ipc_object_t *ipc, ul_thread_t *sender)
 {
     ul_thread_t *thread;
     
     if (!ul_list_is_empty(&ipc->suspend_thread_list))
     {
-        /* »ñÈ¡×î¸ßÓÅÏÈ¼¶µÄµÈ´ýÏß³Ì */
+        /* èŽ·å–æœ€é«˜ä¼˜å…ˆçº§çš„ç­‰å¾…çº¿ç¨‹ */
         thread = ul_list_entry(ipc->suspend_thread_list.next,
                               ul_thread_t,
                               ipc_list);
@@ -34,25 +34,25 @@ static void _ipc_wakeup_first_receiver(ul_ipc_object_t *ipc, ul_thread_t *sender
         thread->err = UL_EOK;
         
         
-        if (thread == ul_thread_self()) // ·ÀÖ¹ÊÇ×Ô¼º·¢¸ø×Ô¼º£¬ÖØÒª
+        if (thread == ul_thread_self()) // é˜²æ­¢æ˜¯è‡ªå·±å‘ç»™è‡ªå·±ï¼Œé‡è¦
         {
             return;
             
         }
         
-        if (thread->state == UL_THREAD_STATE_BLOCK) // Èç¹ûÊÇÔÚ×èÈû¹ý³ÌÖÐ»Ö¸´£¬ÐèÒª¸üÐÂÊ±¼ä
+        if (thread->state == UL_THREAD_STATE_BLOCK) // å¦‚æžœæ˜¯åœ¨é˜»å¡žè¿‡ç¨‹ä¸­æ¢å¤ï¼Œéœ€è¦æ›´æ–°æ—¶é—´
         {
             ul_list_del_init(&thread->tlist);
             _update_next_wake_time();
         }
         
-        /* »Ö¸´µ½¾ÍÐ÷ÁÐ±í */
+        /* æ¢å¤åˆ°å°±ç»ªåˆ—è¡¨ */
         _thread_insert_ready_list(thread);
         
-        /* ¼ì²éÊÇ·ñÐèÒªµ÷¶È */
+        /* æ£€æŸ¥æ˜¯å¦éœ€è¦è°ƒåº¦ */
         if (thread->current_priority < sender->current_priority)
         {
-            ul_schedule();  /* ¸ßÓÅÏÈ¼¶ÈÎÎñ±»»½ÐÑ£¬Á¢¼´µ÷¶È */
+            ul_schedule();  /* é«˜ä¼˜å…ˆçº§ä»»åŠ¡è¢«å”¤é†’ï¼Œç«‹å³è°ƒåº¦ */
         }
     }
 }
@@ -74,20 +74,20 @@ ul_ecode ul_queue_init(ul_queue_t *queue,
         return UL_ENULL;
     }
     
-    /* ³õÊ¼»¯¶ÔÏó»ùÀà */
+    /* åˆå§‹åŒ–å¯¹è±¡åŸºç±» */
     ul_object_init(name, &queue->parent.parent, UL_OBJECT_CLASS_QUEUE);
 
-    /* ·ÖÅä¶ÓÁÐ»º³åÇø */
+    /* åˆ†é…é˜Ÿåˆ—ç¼“å†²åŒº */
     queue->buffer = buffer;
     
-    /* ³õÊ¼»¯¶ÓÁÐ²ÎÊý */
+    /* åˆå§‹åŒ–é˜Ÿåˆ—å‚æ•° */
     queue->msg_size = msg_size;
     queue->capacity = capacity;
     queue->head = 0;
     queue->tail = 0;
     queue->count = 0;
 
-    /* Ö»³õÊ¼»¯½ÓÊÕµÈ´ýÁÐ±í */
+    /* åªåˆå§‹åŒ–æŽ¥æ”¶ç­‰å¾…åˆ—è¡¨ */
     ul_list_init(&queue->parent.suspend_thread_list);
 
     return UL_EOK;
@@ -109,7 +109,7 @@ ul_queue_t* ul_queue_create(const char *name,
         return UL_NULL;
     }
     
-    /* ·ÖÅä¶ÓÁÐ»º³åÇø */
+    /* åˆ†é…é˜Ÿåˆ—ç¼“å†²åŒº */
     queue->buffer = ul_malloc(capacity * msg_size);
     if (queue->buffer == NULL)
     {
@@ -130,7 +130,7 @@ ul_ecode ul_queue_delete(ul_queue_t *queue)
     
     level = ul_hw_interrupt_disable();
     
-    /* »½ÐÑËùÓÐµÈ´ýµÄ½ÓÊÕÏß³Ì */
+    /* å”¤é†’æ‰€æœ‰ç­‰å¾…çš„æŽ¥æ”¶çº¿ç¨‹ */
     while (!ul_list_is_empty(&queue->parent.suspend_thread_list))
     {
         thread = ul_list_entry(queue->parent.suspend_thread_list.next,
@@ -138,23 +138,23 @@ ul_ecode ul_queue_delete(ul_queue_t *queue)
                               ipc_list);
         ul_list_del_init(&thread->ipc_list);
         
-        /* ÉèÖÃ´íÎóÂë²¢»Ö¸´Ïß³Ì */
+        /* è®¾ç½®é”™è¯¯ç å¹¶æ¢å¤çº¿ç¨‹ */
         _thread_insert_ready_list(thread);
     }
     
-    /* Èç¹ûÓÐÏß³Ì±»»½ÐÑÇÒÓÅÏÈ¼¶¸ü¸ß£¬´¥·¢µ÷¶È */
+    /* å¦‚æžœæœ‰çº¿ç¨‹è¢«å”¤é†’ä¸”ä¼˜å…ˆçº§æ›´é«˜ï¼Œè§¦å‘è°ƒåº¦ */
     //ul_schedule_if_needed();
     
     ul_hw_interrupt_enable(level);
 
-    /* ÊÍ·Å»º³åÇø */
+    /* é‡Šæ”¾ç¼“å†²åŒº */
     if (queue->buffer != NULL)
     {
         ul_free(queue->buffer);
         queue->buffer = NULL;
     }
 
-    /* ÍÑÀë¶ÔÏóÈÝÆ÷ */
+    /* è„±ç¦»å¯¹è±¡å®¹å™¨ */
     ul_object_unregister(&queue->parent.parent);
 
     return UL_EOK;
@@ -184,7 +184,7 @@ ul_ecode ul_queue_send(ul_queue_t *queue,
         return UL_ERROR;
     }
     
-    /* ¶ÓÁÐÂúÊ±µÄ´¦Àí */
+    /* é˜Ÿåˆ—æ»¡æ—¶çš„å¤„ç† */
     if (queue->count == queue->capacity)
     {
         if (!overwrite)
@@ -193,22 +193,22 @@ ul_ecode ul_queue_send(ul_queue_t *queue,
             return UL_EFULL;
         }
         
-        /* ¸²¸ÇÄ£Ê½£º¶ªÆú×î¾ÉµÄÊý¾Ý */
+        /* è¦†ç›–æ¨¡å¼ï¼šä¸¢å¼ƒæœ€æ—§çš„æ•°æ® */
         queue->head = (queue->head + 1) % queue->capacity;
         queue->count--;
         ret = UL_EFULL;
     }
 
-    /* ¸´ÖÆÊý¾Ýµ½¶ÓÁÐ */
+    /* å¤åˆ¶æ•°æ®åˆ°é˜Ÿåˆ— */
     ul_memcpy((uint8_t *)queue->buffer + queue->tail * queue->msg_size,
            buffer,
            len);
 
-    /* ¸üÐÂ¶ÓÁÐË÷Òý */
+    /* æ›´æ–°é˜Ÿåˆ—ç´¢å¼• */
     queue->tail = (queue->tail + 1) % queue->capacity;
     queue->count++;
 
-    /* Èç¹ûÓÐ½ÓÊÕÏß³ÌÔÚµÈ´ý£¬»½ÐÑµÚÒ»¸ö */
+    /* å¦‚æžœæœ‰æŽ¥æ”¶çº¿ç¨‹åœ¨ç­‰å¾…ï¼Œå”¤é†’ç¬¬ä¸€ä¸ª */
 
     _ipc_wakeup_first_receiver(&queue->parent, current_thread);
 
@@ -239,7 +239,7 @@ ul_ecode ul_queue_send_urgent(ul_queue_t *queue,
         return UL_ERROR;
     }
     
-    /* ¶ÓÁÐÂúÊ±µÄ´¦Àí */
+    /* é˜Ÿåˆ—æ»¡æ—¶çš„å¤„ç† */
     if (queue->count == queue->capacity)
     {
         if (!overwrite)
@@ -248,25 +248,25 @@ ul_ecode ul_queue_send_urgent(ul_queue_t *queue,
             return UL_EFULL;
         }
         
-        /* ¸²¸ÇÄ£Ê½£º¶ªÆú¶ÓÍ·×î¾ÉµÄÊý¾Ý */
+        /* è¦†ç›–æ¨¡å¼ï¼šä¸¢å¼ƒé˜Ÿå¤´æœ€æ—§çš„æ•°æ® */
         queue->head = (queue->head + 1) % queue->capacity;
         queue->count--;
         ret = UL_EFULL;
     }
 
-    /* ½«Êý¾Ý²åÈëµ½¶ÓÁÐÍ·²¿ */
-    /* ÏÈÒÆ¶¯headÖ¸Õë */
+    /* å°†æ•°æ®æ’å…¥åˆ°é˜Ÿåˆ—å¤´éƒ¨ */
+    /* å…ˆç§»åŠ¨headæŒ‡é’ˆ */
     queue->head = (queue->head - 1 + queue->capacity) % queue->capacity;
     
-    /* ¸´ÖÆÊý¾Ýµ½¶ÓÁÐÍ·²¿ */
+    /* å¤åˆ¶æ•°æ®åˆ°é˜Ÿåˆ—å¤´éƒ¨ */
     ul_memcpy((uint8_t *)queue->buffer + queue->head * queue->msg_size,
            buffer,
            len);
 
-    /* ¸üÐÂ¶ÓÁÐ¼ÆÊý */
+    /* æ›´æ–°é˜Ÿåˆ—è®¡æ•° */
     queue->count++;
 
-    /* Èç¹ûÓÐ½ÓÊÕÏß³ÌÔÚµÈ´ý£¬»½ÐÑµÚÒ»¸ö */
+    /* å¦‚æžœæœ‰æŽ¥æ”¶çº¿ç¨‹åœ¨ç­‰å¾…ï¼Œå”¤é†’ç¬¬ä¸€ä¸ª */
     _ipc_wakeup_first_receiver(&queue->parent, current_thread);
 
     ul_hw_interrupt_enable(level);
@@ -291,10 +291,10 @@ ul_ecode ul_queue_receive(ul_queue_t *queue,
 
     current_thread = ul_thread_self();
     
-    /* ¶ÓÁÐ¿Õ£¬ÐèÒªµÈ´ý */
+    /* é˜Ÿåˆ—ç©ºï¼Œéœ€è¦ç­‰å¾… */
     while (queue->count == 0)
     {
-        /* ·Ç×èÈûÄ£Ê½Ö±½Ó·µ»Ø */
+        /* éžé˜»å¡žæ¨¡å¼ç›´æŽ¥è¿”å›ž */
         if (timeout == 0)
         {
             
@@ -305,7 +305,7 @@ ul_ecode ul_queue_receive(ul_queue_t *queue,
         
         ul_list_insert_after(&queue->parent.suspend_thread_list, &current_thread->ipc_list);
         
-            // ÉèÖÃ³¬Ê±
+            // è®¾ç½®è¶…æ—¶
         if (timeout != ULOS_MAX_DELAY)
         {
             current_thread->wake_tick = ulOS_get_tick() + timeout;
@@ -327,7 +327,7 @@ ul_ecode ul_queue_receive(ul_queue_t *queue,
 
         ul_hw_interrupt_enable(level);
           
-        /* ±»»½ÐÑºó */
+        /* è¢«å”¤é†’åŽ */
         if (current_thread->err == UL_EOK)
         {
             ret = UL_EOK;
@@ -340,12 +340,12 @@ ul_ecode ul_queue_receive(ul_queue_t *queue,
         level = ul_hw_interrupt_disable();
     }
 
-    /* ´Ó¶ÓÁÐ¸´ÖÆÊý¾Ý */
+    /* ä»Žé˜Ÿåˆ—å¤åˆ¶æ•°æ® */
     ul_memcpy(buffer,
            (uint8_t *)queue->buffer + queue->head * queue->msg_size,
            len);
 
-    /* ¸üÐÂ¶ÓÁÐË÷Òý */
+    /* æ›´æ–°é˜Ÿåˆ—ç´¢å¼• */
     queue->head = (queue->head + 1) % queue->capacity;
     queue->count--;
 
@@ -390,12 +390,12 @@ ul_ecode ul_sem_init(ul_sem_t *self,
 {
     UL_ASSERT(self != NULL);
 
-    /* ³õÊ¼»¯¶ÔÏó»ùÀà */
+    /* åˆå§‹åŒ–å¯¹è±¡åŸºç±» */
     ul_object_init(name, &self->parent.parent, UL_OBJECT_CLASS_SEMAPHORE);
 
     self->count = init_count;
 
-    /* Ö»³õÊ¼»¯½ÓÊÕµÈ´ýÁÐ±í */
+    /* åªåˆå§‹åŒ–æŽ¥æ”¶ç­‰å¾…åˆ—è¡¨ */
     ul_list_init(&self->parent.suspend_thread_list);
 
     return UL_EOK;
@@ -428,7 +428,7 @@ ul_ecode ul_sem_delete(ul_sem_t *self)
     
     level = ul_hw_interrupt_disable();
     
-    /* »½ÐÑËùÓÐµÈ´ýµÄ½ÓÊÕÏß³Ì */
+    /* å”¤é†’æ‰€æœ‰ç­‰å¾…çš„æŽ¥æ”¶çº¿ç¨‹ */
     while (!ul_list_is_empty(&self->parent.suspend_thread_list))
     {
         thread = ul_list_entry(self->parent.suspend_thread_list.next,
@@ -436,16 +436,16 @@ ul_ecode ul_sem_delete(ul_sem_t *self)
                               ipc_list);
         ul_list_del_init(&thread->ipc_list);
         
-        /* ÉèÖÃ´íÎóÂë²¢»Ö¸´Ïß³Ì */
+        /* è®¾ç½®é”™è¯¯ç å¹¶æ¢å¤çº¿ç¨‹ */
         _thread_insert_ready_list(thread);
     }
     
-    /* Èç¹ûÓÐÏß³Ì±»»½ÐÑÇÒÓÅÏÈ¼¶¸ü¸ß£¬´¥·¢µ÷¶È */
+    /* å¦‚æžœæœ‰çº¿ç¨‹è¢«å”¤é†’ä¸”ä¼˜å…ˆçº§æ›´é«˜ï¼Œè§¦å‘è°ƒåº¦ */
     //ul_schedule_if_needed();
     
     ul_hw_interrupt_enable(level);
 
-    /* ÍÑÀë¶ÔÏóÈÝÆ÷ */
+    /* è„±ç¦»å¯¹è±¡å®¹å™¨ */
     ul_object_unregister(&self->parent.parent);
 
     return UL_EOK;
@@ -465,7 +465,7 @@ ul_ecode ul_sem_give(ul_sem_t *self)
     current_thread = ul_thread_self();
     
     
-    /* ÂúÊ±µÄ´¦Àí */
+    /* æ»¡æ—¶çš„å¤„ç† */
     if (self->count >= ULOS_SEMAPHORE_MAX_COUNT)
     {
         return UL_EFULL;
@@ -473,7 +473,7 @@ ul_ecode ul_sem_give(ul_sem_t *self)
 
     self->count++;
 
-    /* Èç¹ûÓÐ½ÓÊÕÏß³ÌÔÚµÈ´ý£¬»½ÐÑµÚÒ»¸ö */
+    /* å¦‚æžœæœ‰æŽ¥æ”¶çº¿ç¨‹åœ¨ç­‰å¾…ï¼Œå”¤é†’ç¬¬ä¸€ä¸ª */
 
     _ipc_wakeup_first_receiver(&self->parent, current_thread);
 
@@ -493,10 +493,10 @@ ul_ecode ul_sem_take(ul_sem_t *self,
 
     current_thread = ul_thread_self();
     
-    /* ¶ÓÁÐ¿Õ£¬ÐèÒªµÈ´ý */
+    /* é˜Ÿåˆ—ç©ºï¼Œéœ€è¦ç­‰å¾… */
     while (self->count == 0)
     {
-        /* ·Ç×èÈûÄ£Ê½Ö±½Ó·µ»Ø */
+        /* éžé˜»å¡žæ¨¡å¼ç›´æŽ¥è¿”å›ž */
         if (timeout == 0)
         {
             ul_hw_interrupt_enable(level);
@@ -506,7 +506,7 @@ ul_ecode ul_sem_take(ul_sem_t *self,
         
         ul_list_insert_after(&self->parent.suspend_thread_list, &current_thread->ipc_list);
         
-            // ÉèÖÃ³¬Ê±
+            // è®¾ç½®è¶…æ—¶
         if (timeout != ULOS_MAX_DELAY)
         {
             current_thread->wake_tick = ulOS_get_tick() + timeout;
@@ -519,7 +519,7 @@ ul_ecode ul_sem_take(ul_sem_t *self,
 
         ul_hw_interrupt_enable(level);
         
-        /* ±»»½ÐÑºó */
+        /* è¢«å”¤é†’åŽ */
         level = ul_hw_interrupt_disable();
     }
 
@@ -533,19 +533,19 @@ ul_ecode ul_sem_take(ul_sem_t *self,
 
 #if ( ULOS_CONFIG_USE_EVENT == 1 )
 
-/* ¼ì²éÊÂ¼þÊÇ·ñÂú×ãÌõ¼þ */
+/* æ£€æŸ¥äº‹ä»¶æ˜¯å¦æ»¡è¶³æ¡ä»¶ */
 ul_bool_t _thread_event_check(ul_thread_t *thread,
                                       uint32_t event)
 {
     uint32_t set = thread->event_set;
     uint8_t option = thread->event_info;
 
-    /* ¼ì²éÂß¼­Óë */
+    /* æ£€æŸ¥é€»è¾‘ä¸Ž */
     if (option & UL_EVENT_FLAG_AND)
     {
         return (event & set) == set;
     }
-    /* ¼ì²éÂß¼­»ò */
+    /* æ£€æŸ¥é€»è¾‘æˆ– */
     else if (option & UL_EVENT_FLAG_OR)
     {
         return (event & set) != 0;
@@ -554,37 +554,37 @@ ul_bool_t _thread_event_check(ul_thread_t *thread,
     return false;
 }
 
-/* ÊÂ¼þ×é³õÊ¼»¯ */
+/* äº‹ä»¶ç»„åˆå§‹åŒ– */
 ul_ecode ul_event_init(struct ul_event *event,
                       const char *name)
 {
     UL_ASSERT(event != NULL);
 
-    /* ³õÊ¼»¯¶ÔÏó»ùÀà */
+    /* åˆå§‹åŒ–å¯¹è±¡åŸºç±» */
     ul_object_init(name, &event->parent.parent, UL_OBJECT_CLASS_EVENT);
 
-    /* ³õÊ¼»¯ÊÂ¼þÖµ */
+    /* åˆå§‹åŒ–äº‹ä»¶å€¼ */
     event->event_set = 0;
 
-    /* ³õÊ¼»¯µÈ´ýÁÐ±í */
+    /* åˆå§‹åŒ–ç­‰å¾…åˆ—è¡¨ */
     ul_list_init(&event->parent.suspend_thread_list);
 
     return UL_EOK;
 }
 
-/* ´´½¨ÊÂ¼þ×é */
+/* åˆ›å»ºäº‹ä»¶ç»„ */
 ul_event_t* ul_event_create(const char *name)
 {
     struct ul_event *event;
 
-    /* ·ÖÅäÊÂ¼þ×é¿ØÖÆ¿é */
+    /* åˆ†é…äº‹ä»¶ç»„æŽ§åˆ¶å— */
     event = ul_malloc(sizeof(struct ul_event));
     if (event == NULL)
     {
         return NULL;
     }
 
-    /* ³õÊ¼»¯ÊÂ¼þ×é */
+    /* åˆå§‹åŒ–äº‹ä»¶ç»„ */
     if (ul_event_init(event, name) != UL_EOK)
     {
         ul_free(event);
@@ -594,7 +594,7 @@ ul_event_t* ul_event_create(const char *name)
     return event;
 }
 
-/* É¾³ýÊÂ¼þ×é */
+/* åˆ é™¤äº‹ä»¶ç»„ */
 ul_ecode ul_event_delete(struct ul_event *event)
 {
     ul_thread_t *thread;
@@ -604,7 +604,7 @@ ul_ecode ul_event_delete(struct ul_event *event)
 
     level = ul_hw_interrupt_disable();
 
-    /* »½ÐÑËùÓÐµÈ´ýµÄÏß³Ì */
+    /* å”¤é†’æ‰€æœ‰ç­‰å¾…çš„çº¿ç¨‹ */
     while (!ul_list_is_empty(&event->parent.suspend_thread_list))
     {
         thread = ul_list_entry(event->parent.suspend_thread_list.next,
@@ -617,13 +617,13 @@ ul_ecode ul_event_delete(struct ul_event *event)
 
     ul_hw_interrupt_enable(level);
 
-    /* ÊÍ·ÅÊÂ¼þ×é¿ØÖÆ¿é */
+    /* é‡Šæ”¾äº‹ä»¶ç»„æŽ§åˆ¶å— */
     ul_free(event);
 
     return UL_EOK;
 }
 
-/* ·¢ËÍÊÂ¼þ */
+/* å‘é€äº‹ä»¶ */
 ul_ecode ul_event_send(struct ul_event *event,
                       uint32_t set)
 {
@@ -637,18 +637,18 @@ ul_ecode ul_event_send(struct ul_event *event,
     level = ul_hw_interrupt_disable();
     event->event_set |= set;
 
-    /* ±éÀúËùÓÐµÈ´ýµÄÏß³Ì */
+    /* éåŽ†æ‰€æœ‰ç­‰å¾…çš„çº¿ç¨‹ */
     ul_list_for_each_safe(node, next, &event->parent.suspend_thread_list)
     {
         thread = ul_list_entry(node, ul_thread_t, ipc_list);
         
-        /* ¼ì²éÊÇ·ñÂú×ãÏß³ÌµÄµÈ´ýÌõ¼þ */
+        /* æ£€æŸ¥æ˜¯å¦æ»¡è¶³çº¿ç¨‹çš„ç­‰å¾…æ¡ä»¶ */
         if (_thread_event_check(thread, event->event_set))
         {
-            /* ´ÓµÈ´ýÁÐ±íÒÆ³ý */
+            /* ä»Žç­‰å¾…åˆ—è¡¨ç§»é™¤ */
             ul_list_del_init(&thread->ipc_list);
             
-            /* »½ÐÑÏß³Ì */
+            /* å”¤é†’çº¿ç¨‹ */
 
             _thread_insert_ready_list(thread);
         }
@@ -658,12 +658,12 @@ ul_ecode ul_event_send(struct ul_event *event,
     return UL_EOK;
 }
 
-/* ½ÓÊÕÊÂ¼þ */
+/* æŽ¥æ”¶äº‹ä»¶ */
 ul_ecode ul_event_recv(struct ul_event *event,
-                      uint32_t set,     // ÒªµÈ´ýµÄÊÂ¼þÎ»
-                      uint8_t option,   // Ñ¡Ïî£¨AND/OR/CLEAR£©
+                      uint32_t set,     // è¦ç­‰å¾…çš„äº‹ä»¶ä½
+                      uint8_t option,   // é€‰é¡¹ï¼ˆAND/OR/CLEARï¼‰
                       ul_tick_t timeout,
-                      uint32_t *recved) // Êµ¼Ê½ÓÊÕµ½µÄÊÂ¼þ
+                      uint32_t *recved) // å®žé™…æŽ¥æ”¶åˆ°çš„äº‹ä»¶
 {
     ul_thread_t *current_thread;
     uint32_t level;
@@ -674,20 +674,20 @@ ul_ecode ul_event_recv(struct ul_event *event,
     
     current_thread = ul_thread_self();
     
-    /* ÉèÖÃµÈ´ýÊÂ¼þ */
+    /* è®¾ç½®ç­‰å¾…äº‹ä»¶ */
     current_thread->event_set = set;
     current_thread->event_info = option;
     
-    /* ¼ì²éÊÇ·ñÂú×ãÌõ¼þ */
+    /* æ£€æŸ¥æ˜¯å¦æ»¡è¶³æ¡ä»¶ */
     if (_thread_event_check(current_thread, event->event_set))
     {
-        /* Âú×ãÌõ¼þ£¬·µ»ØÊÂ¼þ */
+        /* æ»¡è¶³æ¡ä»¶ï¼Œè¿”å›žäº‹ä»¶ */
         if (recved != NULL)
         {
             *recved = event->event_set & set;
         }
 
-        /* Çå³ýÏàÓ¦µÄÊÂ¼þÎ» */
+        /* æ¸…é™¤ç›¸åº”çš„äº‹ä»¶ä½ */
         if (option & UL_EVENT_FLAG_CLEAR)
         {
             event->event_set &= ~set;
@@ -697,7 +697,7 @@ ul_ecode ul_event_recv(struct ul_event *event,
         return UL_EOK;
     }
 
-    /* ²»Âú×ãÌõ¼þ£¬ÐèÒªµÈ´ý */
+    /* ä¸æ»¡è¶³æ¡ä»¶ï¼Œéœ€è¦ç­‰å¾… */
     if (timeout == 0)
     {
         ul_hw_interrupt_enable(level);
@@ -706,7 +706,7 @@ ul_ecode ul_event_recv(struct ul_event *event,
 
     ul_list_insert_after(&event->parent.suspend_thread_list, &current_thread->ipc_list);
         
-    // ÉèÖÃ³¬Ê±
+    // è®¾ç½®è¶…æ—¶
     if (timeout != ULOS_MAX_DELAY)
     {
         current_thread->wake_tick = ulOS_get_tick() + timeout;
@@ -719,15 +719,15 @@ ul_ecode ul_event_recv(struct ul_event *event,
 
     ul_hw_interrupt_enable(level);
     
-    /* ±»»½ÐÑºó */
+    /* è¢«å”¤é†’åŽ */
     
-    /* ·µ»Ø½ÓÊÕµ½µÄÊÂ¼þ */
+    /* è¿”å›žæŽ¥æ”¶åˆ°çš„äº‹ä»¶ */
     if (recved != NULL)
     {
         *recved = event->event_set & set;
     }
     
-    /* Çå³ýÏàÓ¦µÄÊÂ¼þÎ» */
+    /* æ¸…é™¤ç›¸åº”çš„äº‹ä»¶ä½ */
     if (current_thread->event_info & UL_EVENT_FLAG_CLEAR)
     {
         event->event_set &= ~current_thread->event_set;

@@ -1,5 +1,5 @@
 /**
- * ²»ÓëulOSÇ¿°ó¶¨£¬¿Éµ¥¶À×÷ÎªÄ£¿éÊ¹ÓÃ
+ * ä¸ä¸ulOSå¼ºç»‘å®šï¼Œå¯å•ç‹¬ä½œä¸ºæ¨¡å—ä½¿ç”¨
  * Change Logs:
  * Date           Author       Notes
  * 2025-11-03     zhuqinsheng   the first version
@@ -13,32 +13,32 @@
 extern "C" {
 #endif  /* __cplusplus */
 
-/* ¶Ñ´óĞ¡ÅäÖÃ */
+/* å †å¤§å°é…ç½® */
 #ifndef UL_HEAP_SIZE
-#define UL_HEAP_SIZE          ((ul_size_t)(1024 * 1))   /* ¶Ñ´óĞ¡ 1KB */
+#define UL_HEAP_SIZE          ((ul_size_t)(1024 * 1))   /* å †å¤§å° 1KB */
 #endif
 
 /**
- * @brief ¶Ñ³õÊ¼»¯
+ * @brief å †åˆå§‹åŒ–
  */
 void ul_heap_init(void);
 
 /**
- * @brief ÄÚ´æ·ÖÅä
+ * @brief å†…å­˜åˆ†é…
  */
 void *ul_malloc(ul_size_t size);
 
 /**
- * @brief ÄÚ´æÊÍ·Å
+ * @brief å†…å­˜é‡Šæ”¾
  */
 void ul_free(void *ptr);
 
 /**
- * @brief ÄÚ´æÖØ·ÖÅä
+ * @brief å†…å­˜é‡åˆ†é…
  */
 void *ul_realloc(void *ptr, ul_size_t size);
 
-/* ¹¤¾ßº¯Êı */
+/* å·¥å…·å‡½æ•° */
 ul_size_t   ul_heap_get_total_size(void);
 ul_size_t   ul_heap_get_used_size(void);
 ul_size_t   ul_heap_get_free_size(void);
@@ -46,12 +46,12 @@ ul_size_t   ul_heap_get_max_used_size(void);
 ul_uint32_t ul_heap_get_alloc_fail_count(void);
 
 /**
- * @brief »ñÈ¡¶ÑÍ³¼ÆĞÅÏ¢
+ * @brief è·å–å †ç»Ÿè®¡ä¿¡æ¯
  * 
- * - ×ÜÌåÊ¹ÓÃÂÊ
- * - Ã¿¸ö¿éµÄ×´Ì¬
- * - ¿ÕÏĞÁ´±í½á¹¹
- * - ÀúÊ·Í³¼ÆĞÅÏ¢
+ * - æ€»ä½“ä½¿ç”¨ç‡
+ * - æ¯ä¸ªå—çš„çŠ¶æ€
+ * - ç©ºé—²é“¾è¡¨ç»“æ„
+ * - å†å²ç»Ÿè®¡ä¿¡æ¯
  */
 void ul_heap_print(void);
 

@@ -2,17 +2,17 @@
 #include "ulos_example.h"
 #if ( ULOS_CONFIG_USE_TIMER == 1 )
 
-/* ¶¨Ê±Æ÷µÄ¿ØÖÆ¿é */
+/* å®šæ—¶å™¨çš„æ§åˆ¶å— */
 ul_timer_t *timer1;
 ul_timer_t *timer2;
 static int cnt = 0;
 
-/* ¶¨Ê±Æ÷1³¬Ê±º¯Êı */
+/* å®šæ—¶å™¨1è¶…æ—¶å‡½æ•° */
 static void timeout1(void *parameter)
 {
     ul_kprintf("periodic timer is timeout %d\n", cnt);
 
-    /* ÔËĞĞµÚ10´Î£¬Í£Ö¹ÖÜÆÚ¶¨Ê±Æ÷ */
+    /* è¿è¡Œç¬¬10æ¬¡ï¼Œåœæ­¢å‘¨æœŸå®šæ—¶å™¨ */
     if (cnt++ >= 9)
     {
         ul_timer_stop(timer1);
@@ -20,7 +20,7 @@ static void timeout1(void *parameter)
     }
 }
 
-/* ¶¨Ê±Æ÷2³¬Ê±º¯Êı */
+/* å®šæ—¶å™¨2è¶…æ—¶å‡½æ•° */
 static void timeout2(void *parameter)
 {
     ul_kprintf("one shot timer is timeout\n");
@@ -28,20 +28,20 @@ static void timeout2(void *parameter)
 
 int example_timer(void)
 {
-    /* ´´½¨¶¨Ê±Æ÷1  ÖÜÆÚ¶¨Ê±Æ÷ */
+    /* åˆ›å»ºå®šæ—¶å™¨1  å‘¨æœŸå®šæ—¶å™¨ */
     timer1 = ul_timer_create("timer1", timeout1,
                              UL_NULL, 30,
                              ULOS_TIMER_TYPE_PERIODIC);
 
-    /* Æô¶¯¶¨Ê±Æ÷1 */
+    /* å¯åŠ¨å®šæ—¶å™¨1 */
     if (timer1 != UL_NULL) ul_timer_start(timer1);
 
-    /* ´´½¨¶¨Ê±Æ÷2 µ¥´Î¶¨Ê±Æ÷ */
+    /* åˆ›å»ºå®šæ—¶å™¨2 å•æ¬¡å®šæ—¶å™¨ */
     timer2 = ul_timer_create("timer2", timeout2,
                              UL_NULL,  10,
                              ULOS_TIMER_TYPE_ONESHOT);
 
-    /* Æô¶¯¶¨Ê±Æ÷2 */
+    /* å¯åŠ¨å®šæ—¶å™¨2 */
     if (timer2 != UL_NULL) ul_timer_start(timer2);
     return 0;
 }

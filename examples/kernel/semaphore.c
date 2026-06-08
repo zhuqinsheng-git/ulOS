@@ -3,7 +3,7 @@
 
 #include "ul_thread.h"
 #include "ul_ipc.h"
-/* Ö¸ÏòĞÅºÅÁ¿µÄÖ¸Õë */
+/* æŒ‡å‘ä¿¡å·é‡çš„æŒ‡é’ˆ */
 ul_sem_t *dynamic_sem = UL_NULL;
 
 ul_thread_t *sem_thread1;
@@ -22,7 +22,7 @@ static void _thread1_entry(void *parameter)
         else
             return; 
         
-        /* countÃ¿¼ÆÊı10´Î£¬¾ÍÊÍ·ÅÒ»´ÎĞÅºÅÁ¿ */
+        /* countæ¯è®¡æ•°10æ¬¡ï¼Œå°±é‡Šæ”¾ä¸€æ¬¡ä¿¡å·é‡ */
          if(0 == (count % 10))
         {
             ul_sem_give(dynamic_sem);   
@@ -41,7 +41,7 @@ static void _thread2_entry(void *parameter)
     static ul_uint8_t number = 0;
     while(1)
     {
-        /* ÓÀ¾Ã·½Ê½µÈ´ıĞÅºÅÁ¿£¬»ñÈ¡µ½ĞÅºÅÁ¿£¬ÔòÖ´ĞĞnumber×Ô¼ÓµÄ²Ù×÷ */
+        /* æ°¸ä¹…æ–¹å¼ç­‰å¾…ä¿¡å·é‡ï¼Œè·å–åˆ°ä¿¡å·é‡ï¼Œåˆ™æ‰§è¡Œnumberè‡ªåŠ çš„æ“ä½œ */
         result = ul_sem_take(dynamic_sem, ULOS_MAX_DELAY);
         ul_enter_critical();
         if (result != UL_EOK)
@@ -59,11 +59,11 @@ static void _thread2_entry(void *parameter)
     }   
 }
 
-/* ²âÊÔº¯Êı */
+/* æµ‹è¯•å‡½æ•° */
 void example_semaphore(void)
 {
     
-    /* ´´½¨Ò»¸ö¶¯Ì¬ĞÅºÅÁ¿£¬³õÊ¼ÖµÊÇ0 */
+    /* åˆ›å»ºä¸€ä¸ªåŠ¨æ€ä¿¡å·é‡ï¼Œåˆå§‹å€¼æ˜¯0 */
     dynamic_sem = ul_sem_create("dsem", 0);
     if (dynamic_sem == UL_NULL)
     {

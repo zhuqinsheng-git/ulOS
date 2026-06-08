@@ -12,42 +12,42 @@
 extern "C" {
 #endif  /* __cplusplus */
 
-/* »¥³âËø½á¹¹Ìå */
+/* äº’æ–¥é”ç»“æ„ä½“ */
 typedef struct ul_mutex
 {
     struct ul_object parent;
 
-    struct ul_thread *owner;          /* ËøµÄ³ÖÓĞÕß */
-    ul_uint32_t hold_count;           /* µİ¹é³ÖÓĞ¼ÆÊı */
-    ul_uint8_t original_priority;     /* Ô­Ê¼ÓÅÏÈ¼¶ */
-    ul_list_t wait_list;              /* µÈ´ıÁ´±í */
+    struct ul_thread *owner;          /* é”çš„æŒæœ‰è€… */
+    ul_uint32_t hold_count;           /* é€’å½’æŒæœ‰è®¡æ•° */
+    ul_uint8_t original_priority;     /* åŸå§‹ä¼˜å…ˆçº§ */
+    ul_list_t wait_list;              /* ç­‰å¾…é“¾è¡¨ */
 } ul_mutex_t;
 
-/* º¯ÊıÉùÃ÷ */
+/* å‡½æ•°å£°æ˜ */
 
 /**
- * @brief ³õÊ¼»¯»¥³âËø
- * @param mutex »¥³âËø¿ØÖÆ¿é
- * @return UL_EOK ³É¹¦
- * @return UL_EINVAL ²ÎÊı´íÎó
+ * @brief åˆå§‹åŒ–äº’æ–¥é”
+ * @param mutex äº’æ–¥é”æ§åˆ¶å—
+ * @return UL_EOK æˆåŠŸ
+ * @return UL_EINVAL å‚æ•°é”™è¯¯
  */
 ul_ecode ul_mutex_init(struct ul_mutex *mutex, const char *name);
 ul_mutex_t* ul_mutex_create(const char *name);
 /**
- * @brief »ñÈ¡»¥³âËø
- * @param mutex »¥³âËø¿ØÖÆ¿é
- * @param timeout ³¬Ê±Ê±¼ä£¨µ¥Î»£ºÏµÍ³tick£©
- * @return UL_EOK ³É¹¦
- * @return UL_EINVAL ²ÎÊı´íÎó
- * @return UL_ETIMEOUT ³¬Ê±
+ * @brief è·å–äº’æ–¥é”
+ * @param mutex äº’æ–¥é”æ§åˆ¶å—
+ * @param timeout è¶…æ—¶æ—¶é—´ï¼ˆå•ä½ï¼šç³»ç»Ÿtickï¼‰
+ * @return UL_EOK æˆåŠŸ
+ * @return UL_EINVAL å‚æ•°é”™è¯¯
+ * @return UL_ETIMEOUT è¶…æ—¶
  */
 ul_ecode ul_mutex_lock(struct ul_mutex *mutex, ul_tick_t timeout);
 
 /**
- * @brief ÊÍ·Å»¥³âËø
- * @param mutex »¥³âËø¿ØÖÆ¿é
- * @return UL_EOK ³É¹¦
- * @return UL_EINVAL ²ÎÊı´íÎó
+ * @brief é‡Šæ”¾äº’æ–¥é”
+ * @param mutex äº’æ–¥é”æ§åˆ¶å—
+ * @return UL_EOK æˆåŠŸ
+ * @return UL_EINVAL å‚æ•°é”™è¯¯
  */
 ul_ecode ul_mutex_unlock(struct ul_mutex *mutex);
 

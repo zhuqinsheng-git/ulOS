@@ -15,7 +15,7 @@ extern void _thread_remove_ready_list(struct ul_thread *thread);
 extern ul_base_t ul_hw_interrupt_disable(void);
 extern void ul_hw_interrupt_enable(ul_base_t level);
 
-// ³õÊ¼»¯»¥³âËø
+// åˆå§‹åŒ–äº’æ–¥é”
 ul_ecode ul_mutex_init(ul_mutex_t *mutex, const char *name)
 {
     if (mutex == UL_NULL)
@@ -47,7 +47,7 @@ ul_mutex_t* ul_mutex_create(const char *name)
     return self;
 }
 
-// »ñÈ¡»¥³âËø
+// è·å–äº’æ–¥é”
 ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
 {
     if (mutex == UL_NULL)
@@ -59,7 +59,7 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
 
     struct ul_thread *current_thread = ul_thread_self();
 
-    // Èç¹ûµ±Ç°Ïß³ÌÒÑ¾­³ÖÓĞËø£¬µİ¹é¼ÆÊı¼Ó1
+    // å¦‚æœå½“å‰çº¿ç¨‹å·²ç»æŒæœ‰é”ï¼Œé€’å½’è®¡æ•°åŠ 1
     if (mutex->owner == current_thread)
     {
         mutex->hold_count++;
@@ -67,7 +67,7 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
         return UL_EOK;
     }
 
-    // Èç¹ûËøÎ´±»Õ¼ÓÃ
+    // å¦‚æœé”æœªè¢«å ç”¨
     if (mutex->owner == UL_NULL)
     {
         mutex->owner = current_thread;
@@ -77,25 +77,25 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
         return UL_EOK;
     }
 
-    // Ëø±»Õ¼ÓÃ£¬ĞèÒªµÈ´ı
+    // é”è¢«å ç”¨ï¼Œéœ€è¦ç­‰å¾…
     if (timeout == 0)
     {
         ul_hw_interrupt_enable(level);
         return UL_ETIMEOUT;
     }
 
-    // ÓÅÏÈ¼¶¼Ì³Ğ£ºÈç¹ûµ±Ç°Ïß³ÌÓÅÏÈ¼¶¸ßÓÚËø³ÖÓĞÕß£¬ÌáÉıËø³ÖÓĞÕßÓÅÏÈ¼¶
+    // ä¼˜å…ˆçº§ç»§æ‰¿ï¼šå¦‚æœå½“å‰çº¿ç¨‹ä¼˜å…ˆçº§é«˜äºé”æŒæœ‰è€…ï¼Œæå‡é”æŒæœ‰è€…ä¼˜å…ˆçº§
     if (current_thread->current_priority < mutex->owner->current_priority)
     {
-        // ´Ó¾ÍĞ÷¶ÓÁĞÖĞÒÆ³ıËø³ÖÓĞÕß
+        // ä»å°±ç»ªé˜Ÿåˆ—ä¸­ç§»é™¤é”æŒæœ‰è€…
         _thread_remove_ready_list(mutex->owner);
-        // ¸üĞÂÓÅÏÈ¼¶
+        // æ›´æ–°ä¼˜å…ˆçº§
         mutex->owner->current_priority = current_thread->current_priority;
-        // ÖØĞÂ¼ÓÈë¾ÍĞ÷¶ÓÁĞ
+        // é‡æ–°åŠ å…¥å°±ç»ªé˜Ÿåˆ—
         _thread_insert_ready_list(mutex->owner);
     }
 
-    // ½«µ±Ç°Ïß³Ì°´ÓÅÏÈ¼¶²åÈëµÈ´ıÁĞ±í
+    // å°†å½“å‰çº¿ç¨‹æŒ‰ä¼˜å…ˆçº§æ’å…¥ç­‰å¾…åˆ—è¡¨
     ul_list_t *pos;
     struct ul_thread *wait_thread;
     ul_bool_t inserted = UL_FALSE;
@@ -114,7 +114,7 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
     }
     //ul_list_insert_before(&mutex->wait_list, &current_thread->ipc_list);
 
-    // ÉèÖÃ³¬Ê±
+    // è®¾ç½®è¶…æ—¶
     if (timeout != ULOS_MAX_DELAY)
     {
         current_thread->wake_tick = ulOS_get_tick() + timeout;
@@ -127,7 +127,7 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
 
     ul_hw_interrupt_enable(level);
 
-    // ±»»½ĞÑºó¼ì²éÊÇ·ñ³É¹¦»ñÈ¡Ëø
+    // è¢«å”¤é†’åæ£€æŸ¥æ˜¯å¦æˆåŠŸè·å–é”
     if (mutex->owner == current_thread)
     {
         mutex->hold_count = 1;
@@ -138,7 +138,7 @@ ul_ecode ul_mutex_lock(ul_mutex_t *mutex, ul_tick_t timeout)
     return UL_ETIMEOUT;
 }
 
-// ÊÍ·Å»¥³âËø
+// é‡Šæ”¾äº’æ–¥é”
 ul_ecode ul_mutex_unlock(ul_mutex_t *mutex)
 {
     if (mutex == UL_NULL)
@@ -156,17 +156,17 @@ ul_ecode ul_mutex_unlock(ul_mutex_t *mutex)
         return UL_ERROR;
     }
 
-    // µİ¹é¼ÆÊı¼õ1
+    // é€’å½’è®¡æ•°å‡1
     mutex->hold_count--;
 
-    // Èç¹û¼ÆÊı²»Îª0£¬Ö±½Ó·µ»Ø
+    // å¦‚æœè®¡æ•°ä¸ä¸º0ï¼Œç›´æ¥è¿”å›
     if (mutex->hold_count > 0)
     {
         ul_hw_interrupt_enable(level);
         return UL_EOK;
     }
 
-    // »Ö¸´Ô­Ê¼ÓÅÏÈ¼¶
+    // æ¢å¤åŸå§‹ä¼˜å…ˆçº§
     if (current_thread->current_priority != mutex->original_priority)
     {
         _thread_remove_ready_list(current_thread);
@@ -174,7 +174,7 @@ ul_ecode ul_mutex_unlock(ul_mutex_t *mutex)
         _thread_insert_ready_list(current_thread);
     }
 
-    // Èç¹ûÓĞµÈ´ıµÄÏß³Ì£¬»½ĞÑ×î¸ßÓÅÏÈ¼¶µÄÏß³Ì
+    // å¦‚æœæœ‰ç­‰å¾…çš„çº¿ç¨‹ï¼Œå”¤é†’æœ€é«˜ä¼˜å…ˆçº§çš„çº¿ç¨‹
     if (!ul_list_is_empty(&mutex->wait_list))
     {
         struct ul_thread *next_thread = ul_list_entry(mutex->wait_list.next,
@@ -198,7 +198,7 @@ ul_ecode ul_mutex_unlock(ul_mutex_t *mutex)
 
     ul_hw_interrupt_enable(level);
 
-    // ´¥·¢µ÷¶È
+    // è§¦å‘è°ƒåº¦
     if (need_schedule == UL_TRUE)
     ul_schedule();
 

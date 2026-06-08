@@ -31,7 +31,7 @@ static ul_ecode ina226_write2byte(ul_ina226_t *self, ul_uint8_t memaddr, ul_uint
 	uint8_t data_low=(uint8_t)wdata&0x00FF;
     uint8_t wdata8[2];
     
-    /* INA226Îª´ó¶ËĞò */
+    /* INA226ä¸ºå¤§ç«¯åº */
     wdata8[0] = data_high;  
     wdata8[1] = data_low;
     
@@ -54,7 +54,7 @@ static ul_ecode ina226_read2byte(ul_ina226_t *self, ul_uint8_t memaddr, ul_uint1
     
     ul_ecode res = self->i2c_read(self, self->addr, memaddr, (uint8_t *)rdata, 2);
     
-    /* INA226Îª´ó¶ËĞò */
+    /* INA226ä¸ºå¤§ç«¯åº */
     *rdata = (*rdata << 8) | (*rdata >> 8);
     
     if (res != UL_EOK)
@@ -85,12 +85,12 @@ static ul_ecode ul_ina226_set_config(ul_ina226_t *self, ul_uint16_t wdata)
 }
 
 /**
- * INA226³õÊ¼»¯º¯Êı
+ * INA226åˆå§‹åŒ–å‡½æ•°
  *
- * @param self        AT24CXX¶ÔÏó
- * @param addr        AT24CXXÉè±¸µØÖ·
+ * @param self        AT24CXXå¯¹è±¡
+ * @param addr        AT24CXXè®¾å¤‡åœ°å€
  *
- * @return ´íÎó´úÂë
+ * @return é”™è¯¯ä»£ç 
  */
 ul_ecode ul_ina226_init(ul_ina226_t *self, ul_uint8_t addr, uint8_t average)
 {

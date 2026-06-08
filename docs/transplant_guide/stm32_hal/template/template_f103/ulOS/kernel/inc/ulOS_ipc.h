@@ -12,46 +12,46 @@
 extern "C" {
 #endif  /* __cplusplus */
 
-/* ==================== IPC»ù´¡¶¨Òå ==================== */
+/* ==================== IPCåŸºç¡€å®šä¹‰ ==================== */
 
 /**
- * @brief IPC¶ÔÏó»ùÀà
+ * @brief IPCå¯¹è±¡åŸºç±»
  */
 typedef struct
 {
-    ul_object_t parent;                /* ¼Ì³Ğ×Ô¶ÔÏó»ùÀà */
-    ul_list_t suspend_thread_list;     /* ¹ÒÆğÏß³ÌÁĞ±í */
+    ul_object_t parent;                /* ç»§æ‰¿è‡ªå¯¹è±¡åŸºç±» */
+    ul_list_t suspend_thread_list;     /* æŒ‚èµ·çº¿ç¨‹åˆ—è¡¨ */
 } ul_ipc_object_t;
 
-/* ==================== ¶ÓÁĞ(Queue) ==================== */
+/* ==================== é˜Ÿåˆ—(Queue) ==================== */
 
 #if ULOS_CONFIG_USE_QUEUE != 0
 
 /**
- * @brief ¶ÓÁĞ¿ØÖÆ¿é
+ * @brief é˜Ÿåˆ—æ§åˆ¶å—
  */
 typedef struct ul_queue
 {
-    ul_ipc_object_t parent;            /* ¼Ì³Ğ×ÔIPC¶ÔÏó */
+    ul_ipc_object_t parent;            /* ç»§æ‰¿è‡ªIPCå¯¹è±¡ */
     
-    void *buffer;                      /* ¶ÓÁĞ»º³åÇø */
-    ul_uint16_t msg_size;             /* µ¥¸öÏûÏ¢´óĞ¡ */
-    ul_uint16_t capacity;             /* ¶ÓÁĞ×î´óÈİÁ¿£¨ÏûÏ¢ÊıÁ¿£©*/
-    ul_uint16_t head;                 /* ¶ÓÍ·Ë÷Òı */
-    ul_uint16_t tail;                 /* ¶ÓÎ²Ë÷Òı */
-    ul_uint16_t count;                /* µ±Ç°¶ÓÁĞÖĞµÄÏûÏ¢ÊıÁ¿ */
+    void *buffer;                      /* é˜Ÿåˆ—ç¼“å†²åŒº */
+    ul_uint16_t msg_size;             /* å•ä¸ªæ¶ˆæ¯å¤§å° */
+    ul_uint16_t capacity;             /* é˜Ÿåˆ—æœ€å¤§å®¹é‡ï¼ˆæ¶ˆæ¯æ•°é‡ï¼‰*/
+    ul_uint16_t head;                 /* é˜Ÿå¤´ç´¢å¼• */
+    ul_uint16_t tail;                 /* é˜Ÿå°¾ç´¢å¼• */
+    ul_uint16_t count;                /* å½“å‰é˜Ÿåˆ—ä¸­çš„æ¶ˆæ¯æ•°é‡ */
 } ul_queue_t;
 
-/* ==================== ¶ÓÁĞ²Ù×÷º¯Êı ==================== */
+/* ==================== é˜Ÿåˆ—æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯¶ÓÁĞ
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @param name ¶ÓÁĞÃû³Æ
- * @param buffer »º³åÇøÖ¸Õë
- * @param capacity ¶ÓÁĞÈİÁ¿
- * @param msg_size ÏûÏ¢´óĞ¡
- * @return ´íÎóÂë
+ * @brief åˆå§‹åŒ–é˜Ÿåˆ—
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @param name é˜Ÿåˆ—åç§°
+ * @param buffer ç¼“å†²åŒºæŒ‡é’ˆ
+ * @param capacity é˜Ÿåˆ—å®¹é‡
+ * @param msg_size æ¶ˆæ¯å¤§å°
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_queue_init(ul_queue_t *queue, 
                        const char *name,
@@ -60,30 +60,30 @@ ul_ecode ul_queue_init(ul_queue_t *queue,
                        uint16_t msg_size);
 
 /**
- * @brief É¾³ı¶ÓÁĞ
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief åˆ é™¤é˜Ÿåˆ—
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_queue_delete(ul_queue_t *queue);
 
 /**
- * @brief ´´½¨¶ÓÁĞ
- * @param name ¶ÓÁĞÃû³Æ
- * @param capacity ¶ÓÁĞÈİÁ¿
- * @param msg_size ÏûÏ¢´óĞ¡
- * @return ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
+ * @brief åˆ›å»ºé˜Ÿåˆ—
+ * @param name é˜Ÿåˆ—åç§°
+ * @param capacity é˜Ÿåˆ—å®¹é‡
+ * @param msg_size æ¶ˆæ¯å¤§å°
+ * @return é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
  */
 ul_queue_t* ul_queue_create(const char *name,
                            uint16_t capacity,
                            uint16_t msg_size);
                         
 /**
- * @brief ·¢ËÍÏûÏ¢µ½¶ÓÁĞ
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @param buffer ÏûÏ¢»º³åÇø
- * @param len ÏûÏ¢³¤¶È
- * @param overwrite ÊÇ·ñ¸²¸Ç
- * @return ´íÎóÂë
+ * @brief å‘é€æ¶ˆæ¯åˆ°é˜Ÿåˆ—
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @param buffer æ¶ˆæ¯ç¼“å†²åŒº
+ * @param len æ¶ˆæ¯é•¿åº¦
+ * @param overwrite æ˜¯å¦è¦†ç›–
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_queue_send(ul_queue_t *queue,
                       const void *buffer,
@@ -91,12 +91,12 @@ ul_ecode ul_queue_send(ul_queue_t *queue,
                       ul_bool_t overwrite);
 
 /**
- * @brief ½ô¼±·¢ËÍÏûÏ¢µ½¶ÓÁĞÍ·
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @param buffer ÏûÏ¢»º³åÇø
- * @param len ÏûÏ¢³¤¶È
- * @param overwrite ÊÇ·ñ¸²¸Ç
- * @return ´íÎóÂë
+ * @brief ç´§æ€¥å‘é€æ¶ˆæ¯åˆ°é˜Ÿåˆ—å¤´
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @param buffer æ¶ˆæ¯ç¼“å†²åŒº
+ * @param len æ¶ˆæ¯é•¿åº¦
+ * @param overwrite æ˜¯å¦è¦†ç›–
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_queue_send_urgent(ul_queue_t *queue,
                              const void *buffer,
@@ -104,12 +104,12 @@ ul_ecode ul_queue_send_urgent(ul_queue_t *queue,
                              ul_bool_t overwrite);
 
 /**
- * @brief ´Ó¶ÓÁĞ½ÓÊÕÏûÏ¢
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @param buffer ½ÓÊÕ»º³åÇø
- * @param len ÏûÏ¢³¤¶È
- * @param timeout ³¬Ê±Ê±¼ä
- * @return ´íÎóÂë
+ * @brief ä»é˜Ÿåˆ—æ¥æ”¶æ¶ˆæ¯
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @param buffer æ¥æ”¶ç¼“å†²åŒº
+ * @param len æ¶ˆæ¯é•¿åº¦
+ * @param timeout è¶…æ—¶æ—¶é—´
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_queue_receive(ul_queue_t *queue,
                           void *buffer,
@@ -117,144 +117,144 @@ ul_ecode ul_queue_receive(ul_queue_t *queue,
                           ul_tick_t timeout);
 
 /**
- * @brief »ñÈ¡¶ÓÁĞÖĞ¿ÉÓÃÏûÏ¢ÊıÁ¿
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @return ¿ÉÓÃÏûÏ¢ÊıÁ¿
+ * @brief è·å–é˜Ÿåˆ—ä¸­å¯ç”¨æ¶ˆæ¯æ•°é‡
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @return å¯ç”¨æ¶ˆæ¯æ•°é‡
  */
 uint16_t ul_queue_available(ul_queue_t *queue);
 
 /**
- * @brief »ñÈ¡¶ÓÁĞÊ£Óà¿Õ¼ä
- * @param queue ¶ÓÁĞ¿ØÖÆ¿éÖ¸Õë
- * @return Ê£Óà¿Õ¼ä
+ * @brief è·å–é˜Ÿåˆ—å‰©ä½™ç©ºé—´
+ * @param queue é˜Ÿåˆ—æ§åˆ¶å—æŒ‡é’ˆ
+ * @return å‰©ä½™ç©ºé—´
  */
 uint16_t ul_queue_available_space(ul_queue_t *queue);
 
 #endif /* ULOS_CONFIG_USE_QUEUE != 0 */
 
-/* ==================== ĞÅºÅÁ¿(Semaphore) ==================== */
+/* ==================== ä¿¡å·é‡(Semaphore) ==================== */
 
 #if ULOS_CONFIG_USE_SEMAPHORE != 0
 
 /**
- * @brief ĞÅºÅÁ¿¿ØÖÆ¿é
+ * @brief ä¿¡å·é‡æ§åˆ¶å—
  */
 typedef struct ul_semaphore
 {
-    ul_ipc_object_t parent;            /* ¼Ì³Ğ×ÔIPC¶ÔÏó */
-    ul_uint16_t count;                 /* ĞÅºÅÁ¿¼ÆÊıÖµ */
+    ul_ipc_object_t parent;            /* ç»§æ‰¿è‡ªIPCå¯¹è±¡ */
+    ul_uint16_t count;                 /* ä¿¡å·é‡è®¡æ•°å€¼ */
 } ul_sem_t;
 
-/* ĞÅºÅÁ¿ÅäÖÃ */
+/* ä¿¡å·é‡é…ç½® */
 #ifndef ULOS_SEMAPHORE_MAX_COUNT
 #define ULOS_SEMAPHORE_MAX_COUNT    ((ul_uint8_t)100)
 #endif
 
-/* ==================== ĞÅºÅÁ¿²Ù×÷º¯Êı ==================== */
+/* ==================== ä¿¡å·é‡æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯ĞÅºÅÁ¿
- * @param self ĞÅºÅÁ¿¿ØÖÆ¿éÖ¸Õë
- * @param name ĞÅºÅÁ¿Ãû³Æ
- * @return ´íÎóÂë
+ * @brief åˆå§‹åŒ–ä¿¡å·é‡
+ * @param self ä¿¡å·é‡æ§åˆ¶å—æŒ‡é’ˆ
+ * @param name ä¿¡å·é‡åç§°
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_sem_init(ul_sem_t *self, 
                     const char *name,
                     ul_uint16_t init_count);
 
 /**
- * @brief ´´½¨ĞÅºÅÁ¿
- * @param name ĞÅºÅÁ¿Ãû³Æ
- * @return ĞÅºÅÁ¿¿ØÖÆ¿éÖ¸Õë
+ * @brief åˆ›å»ºä¿¡å·é‡
+ * @param name ä¿¡å·é‡åç§°
+ * @return ä¿¡å·é‡æ§åˆ¶å—æŒ‡é’ˆ
  */
 ul_sem_t* ul_sem_create(const char *name,
                         ul_uint16_t init_count);
 
 /**
- * @brief É¾³ıĞÅºÅÁ¿
- * @param self ĞÅºÅÁ¿¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief åˆ é™¤ä¿¡å·é‡
+ * @param self ä¿¡å·é‡æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_sem_delete(ul_sem_t *self);
 
 /**
- * @brief ÊÍ·ÅĞÅºÅÁ¿
- * @param self ĞÅºÅÁ¿¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief é‡Šæ”¾ä¿¡å·é‡
+ * @param self ä¿¡å·é‡æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_sem_give(ul_sem_t *self);
 
 /**
- * @brief »ñÈ¡ĞÅºÅÁ¿
- * @param self ĞÅºÅÁ¿¿ØÖÆ¿éÖ¸Õë
- * @param timeout ³¬Ê±Ê±¼ä
- * @return ´íÎóÂë
+ * @brief è·å–ä¿¡å·é‡
+ * @param self ä¿¡å·é‡æ§åˆ¶å—æŒ‡é’ˆ
+ * @param timeout è¶…æ—¶æ—¶é—´
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_sem_take(ul_sem_t *self,
                     ul_tick_t timeout);
 
 #endif /* ULOS_CONFIG_USE_SEMAPHORE != 0 */
 
-/* ==================== ÊÂ¼ş(Event) ==================== */
+/* ==================== äº‹ä»¶(Event) ==================== */
 
 #if ULOS_CONFIG_USE_EVENT != 0
 
 /**
- * @brief ÊÂ¼ş×é¿ØÖÆ¿é
+ * @brief äº‹ä»¶ç»„æ§åˆ¶å—
  */
 typedef struct ul_event
 {
-    ul_ipc_object_t parent;            /* ¼Ì³Ğ×ÔIPC¶ÔÏó */
-    uint32_t event_set;                /* µ±Ç°ÊÂ¼ş¼¯ºÏ */
+    ul_ipc_object_t parent;            /* ç»§æ‰¿è‡ªIPCå¯¹è±¡ */
+    uint32_t event_set;                /* å½“å‰äº‹ä»¶é›†åˆ */
 } ul_event_t;
 
-/* ÊÂ¼ş±êÖ¾Ñ¡Ïî */
-#define UL_EVENT_FLAG_AND   0x01      /* Âß¼­Óë */
-#define UL_EVENT_FLAG_OR    0x02      /* Âß¼­»ò */
-#define UL_EVENT_FLAG_CLEAR 0x04      /* Çå³ı±êÖ¾ */
+/* äº‹ä»¶æ ‡å¿—é€‰é¡¹ */
+#define UL_EVENT_FLAG_AND   0x01      /* é€»è¾‘ä¸ */
+#define UL_EVENT_FLAG_OR    0x02      /* é€»è¾‘æˆ– */
+#define UL_EVENT_FLAG_CLEAR 0x04      /* æ¸…é™¤æ ‡å¿— */
 
-/* ==================== ÊÂ¼ş×é²Ù×÷º¯Êı ==================== */
+/* ==================== äº‹ä»¶ç»„æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯ÊÂ¼ş×é
- * @param event ÊÂ¼ş×é¿ØÖÆ¿éÖ¸Õë
- * @param name ÊÂ¼ş×éÃû³Æ
- * @return ´íÎóÂë
+ * @brief åˆå§‹åŒ–äº‹ä»¶ç»„
+ * @param event äº‹ä»¶ç»„æ§åˆ¶å—æŒ‡é’ˆ
+ * @param name äº‹ä»¶ç»„åç§°
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_event_init(ul_event_t *event,
                       const char *name);
 
 /**
- * @brief ´´½¨ÊÂ¼ş×é
- * @param name ÊÂ¼ş×éÃû³Æ
- * @return ÊÂ¼ş×é¿ØÖÆ¿éÖ¸Õë
+ * @brief åˆ›å»ºäº‹ä»¶ç»„
+ * @param name äº‹ä»¶ç»„åç§°
+ * @return äº‹ä»¶ç»„æ§åˆ¶å—æŒ‡é’ˆ
  */
 ul_event_t* ul_event_create(const char *name);
 
 /**
- * @brief É¾³ıÊÂ¼ş×é
- * @param event ÊÂ¼ş×é¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief åˆ é™¤äº‹ä»¶ç»„
+ * @param event äº‹ä»¶ç»„æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_event_delete(ul_event_t *event);
 
 /**
- * @brief ·¢ËÍÊÂ¼ş
- * @param event ÊÂ¼ş×é¿ØÖÆ¿éÖ¸Õë
- * @param set ÊÂ¼ş±êÖ¾
- * @return ´íÎóÂë
+ * @brief å‘é€äº‹ä»¶
+ * @param event äº‹ä»¶ç»„æ§åˆ¶å—æŒ‡é’ˆ
+ * @param set äº‹ä»¶æ ‡å¿—
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_event_send(ul_event_t *event,
                       uint32_t set);
 
 /**
- * @brief ½ÓÊÕÊÂ¼ş
- * @param event ÊÂ¼ş×é¿ØÖÆ¿éÖ¸Õë
- * @param set ÒªµÈ´ıµÄÊÂ¼şÎ»
- * @param option Ñ¡Ïî£¨AND/OR/CLEAR£©
- * @param timeout ³¬Ê±Ê±¼ä
- * @param recved Êµ¼Ê½ÓÊÕµ½µÄÊÂ¼ş
- * @return ´íÎóÂë
+ * @brief æ¥æ”¶äº‹ä»¶
+ * @param event äº‹ä»¶ç»„æ§åˆ¶å—æŒ‡é’ˆ
+ * @param set è¦ç­‰å¾…çš„äº‹ä»¶ä½
+ * @param option é€‰é¡¹ï¼ˆAND/OR/CLEARï¼‰
+ * @param timeout è¶…æ—¶æ—¶é—´
+ * @param recved å®é™…æ¥æ”¶åˆ°çš„äº‹ä»¶
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_event_recv(ul_event_t *event,
                       uint32_t set,

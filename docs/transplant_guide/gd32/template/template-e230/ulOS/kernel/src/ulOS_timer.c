@@ -8,63 +8,63 @@
 #include "ulOS_ipc.h"
 #include "ulOS_thread.h"
 
-/* ¶¨Ê±Æ÷ÃüÁîÏûÏ¢ */
+/* å®šæ—¶å™¨å‘½ä»¤æ¶ˆæ¯ */
 typedef struct
 {
-    ul_timer_cmd_t cmd;          /* ÃüÁîÀàĞÍ */
-    ul_timer_t *timer;           /* ¶¨Ê±Æ÷¾ä±ú */
-    ul_tick_t period;           /* ĞÂµÄÖÜÆÚ£¨ÓÃÓÚCHANGE_PERIODÃüÁî£© */
-    ul_tick_t timeout;          /* ³¬Ê±Ê±¼ä */
+    ul_timer_cmd_t cmd;          /* å‘½ä»¤ç±»å‹ */
+    ul_timer_t *timer;           /* å®šæ—¶å™¨å¥æŸ„ */
+    ul_tick_t period;           /* æ–°çš„å‘¨æœŸï¼ˆç”¨äºCHANGE_PERIODå‘½ä»¤ï¼‰ */
+    ul_tick_t timeout;          /* è¶…æ—¶æ—¶é—´ */
 } ul_timer_msg_t;
 
-/* ¶¨Ê±Æ÷Ïà¹ØÈ«¾Ö±äÁ¿ */
+/* å®šæ—¶å™¨ç›¸å…³å…¨å±€å˜é‡ */
 ul_list_t ul_timer_list = UL_LIST_HEAD_INIT(ul_timer_list);
 ul_thread_t *timer_thread = UL_NULL;
 ul_queue_t *timer_cmd_queue = UL_NULL;
 
-/* ¶¨Ê±Æ÷ÃüÁî´¦Àíº¯ÊıÉùÃ÷ */
+/* å®šæ—¶å™¨å‘½ä»¤å¤„ç†å‡½æ•°å£°æ˜ */
 static void ul_timer_process_cmd(ul_timer_msg_t *msg);
 static void ul_timer_process_expired(void);
 
 /**
- * @brief ½«¶¨Ê±Æ÷°´³¬Ê±Ê±¼ä²åÈëµ½Á´±íÖĞµÄÕıÈ·Î»ÖÃ
+ * @brief å°†å®šæ—¶å™¨æŒ‰è¶…æ—¶æ—¶é—´æ’å…¥åˆ°é“¾è¡¨ä¸­çš„æ­£ç¡®ä½ç½®
  */
 static void ul_timer_insert_sorted(ul_timer_t *timer)
 {
     ul_list_t *node;
     ul_timer_t *tmp;
 
-    // !!!Ò»¶¨ÒªÏÈ°Ñ×Ô¼ºÒÆ³ı£¬
-    // ·ñÔòÔÚÏÂ·½±ê¼Ç´¦»á´æÔÚ×Ô¼º²å×Ô¼ºÆ¨¹ÉºóÃæµÄÎÊÌâ£¬µ¼ÖÂÁ´±í¶Ïµô
+    // !!!ä¸€å®šè¦å…ˆæŠŠè‡ªå·±ç§»é™¤ï¼Œ
+    // å¦åˆ™åœ¨ä¸‹æ–¹æ ‡è®°å¤„ä¼šå­˜åœ¨è‡ªå·±æ’è‡ªå·±å±è‚¡åé¢çš„é—®é¢˜ï¼Œå¯¼è‡´é“¾è¡¨æ–­æ‰
     ul_list_remove(&timer->node);
 
 
-    /* Èç¹ûÁ´±íÎª¿Õ£¬Ö±½Ó²åÈë */
+    /* å¦‚æœé“¾è¡¨ä¸ºç©ºï¼Œç›´æ¥æ’å…¥ */
     if (ul_list_isempty(&ul_timer_list))
     {
         ul_list_insert_before(&ul_timer_list, &timer->node);
         return;
     }
 
-    /* ±éÀúÁ´±í£¬ÕÒµ½ºÏÊÊµÄ²åÈëÎ»ÖÃ */
+    /* éå†é“¾è¡¨ï¼Œæ‰¾åˆ°åˆé€‚çš„æ’å…¥ä½ç½® */
     ul_list_for_each(node, &ul_timer_list)
     {
         tmp = ul_list_entry(node, ul_timer_t, node);
 
-        /* ÕÒµ½µÚÒ»¸ö³¬Ê±Ê±¼ä´óÓÚµ±Ç°¶¨Ê±Æ÷µÄÎ»ÖÃ */
+        /* æ‰¾åˆ°ç¬¬ä¸€ä¸ªè¶…æ—¶æ—¶é—´å¤§äºå½“å‰å®šæ—¶å™¨çš„ä½ç½® */
         if (tmp->timeout_tick > timer->timeout_tick)
         {
-            ul_list_insert_before(node, &timer->node);  // ±ê¼Ç£¬Õâ¸önode¿ÉÄÜ==&timer->node
+            ul_list_insert_before(node, &timer->node);  // æ ‡è®°ï¼Œè¿™ä¸ªnodeå¯èƒ½==&timer->node
             return;
         }
     }
 
-    /* Èç¹ûÃ»ÕÒµ½ºÏÊÊÎ»ÖÃ£¬²åÈëµ½Á´±íÄ©Î² */
+    /* å¦‚æœæ²¡æ‰¾åˆ°åˆé€‚ä½ç½®ï¼Œæ’å…¥åˆ°é“¾è¡¨æœ«å°¾ */
     ul_list_insert_before(&ul_timer_list, &timer->node);
 }
 
 /**
- * @brief ¶¨Ê±Æ÷Ïß³ÌÈë¿Úº¯Êı
+ * @brief å®šæ—¶å™¨çº¿ç¨‹å…¥å£å‡½æ•°
  */
 static void timer_thread_entry(void *parameter)
 {
@@ -74,7 +74,7 @@ static void timer_thread_entry(void *parameter)
 
     while (1)
     {
-        /* »ñÈ¡ÏÂÒ»¸öÒª´¥·¢µÄ¶¨Ê±Æ÷Ê±¼ä */
+        /* è·å–ä¸‹ä¸€ä¸ªè¦è§¦å‘çš„å®šæ—¶å™¨æ—¶é—´ */
         next_expire_time = ULOS_MAX_TICK;
 
         if (!ul_list_isempty(&ul_timer_list))
@@ -84,28 +84,28 @@ static void timer_thread_entry(void *parameter)
 
             if (next_expire_time > ULOS_MAX_TICK)
             {
-                next_expire_time = 0;  /* ·ÀÖ¹¸ºÊı */
+                next_expire_time = 0;  /* é˜²æ­¢è´Ÿæ•° */
             }
         }
 
         ret = ul_queue_receive(timer_cmd_queue, &msg, sizeof(ul_timer_msg_t), next_expire_time);
 
-        /* µÈ´ıÃüÁî»ò¶¨Ê±Æ÷µ½ÆÚ */
+        /* ç­‰å¾…å‘½ä»¤æˆ–å®šæ—¶å™¨åˆ°æœŸ */
         if (ret == UL_EOK)
         {
-            /* ´¦ÀíÃüÁî */
+            /* å¤„ç†å‘½ä»¤ */
             ul_timer_process_cmd(&msg);
         }
         else if (ret == UL_ETIMEOUT)
         {
-            /* ´¦Àíµ½ÆÚµÄ¶¨Ê±Æ÷ */
+            /* å¤„ç†åˆ°æœŸçš„å®šæ—¶å™¨ */
             ul_timer_process_expired();
         }
     }
 }
 
 /**
- * @brief ´¦Àí¶¨Ê±Æ÷ÃüÁî
+ * @brief å¤„ç†å®šæ—¶å™¨å‘½ä»¤
  */
 static void ul_timer_process_cmd(ul_timer_msg_t *msg)
 {
@@ -121,7 +121,7 @@ static void ul_timer_process_cmd(ul_timer_msg_t *msg)
 
         timer->timeout_tick = msg->timeout;
         timer->stat = ULOS_TIMER_STAT_STARTED;
-        /* Ê¹ÓÃÅÅĞò²åÈë */
+        /* ä½¿ç”¨æ’åºæ’å…¥ */
         ul_timer_insert_sorted(timer);
         break;
 
@@ -139,7 +139,7 @@ static void ul_timer_process_cmd(ul_timer_msg_t *msg)
         {
             ul_list_remove(&timer->node);
             timer->timeout_tick = msg->timeout;
-            /* Ê¹ÓÃÅÅĞò²åÈë */
+            /* ä½¿ç”¨æ’åºæ’å…¥ */
             ul_timer_insert_sorted(timer);
         }
 
@@ -152,7 +152,7 @@ static void ul_timer_process_cmd(ul_timer_msg_t *msg)
         {
             ul_list_remove(&timer->node);
             timer->timeout_tick = ulOS_get_tick() + timer->init_tick;
-            /* Ê¹ÓÃÅÅĞò²åÈë */
+            /* ä½¿ç”¨æ’åºæ’å…¥ */
             ul_timer_insert_sorted(timer);
         }
 
@@ -173,7 +173,7 @@ static void ul_timer_process_cmd(ul_timer_msg_t *msg)
 }
 
 /**
- * @brief ´¦Àíµ½ÆÚµÄ¶¨Ê±Æ÷
+ * @brief å¤„ç†åˆ°æœŸçš„å®šæ—¶å™¨
  */
 static void ul_timer_process_expired(void)
 {
@@ -182,34 +182,34 @@ static void ul_timer_process_expired(void)
     ul_timer_t *timer;
     ul_tick_t current_tick = ulOS_get_tick();
 
-    /* ÓÉÓÚÁ´±íÊÇ°´³¬Ê±Ê±¼äÅÅĞòµÄ£¬Ö»ĞèÒª´¦ÀíÁ´±íÇ°ÃæµÄ¶¨Ê±Æ÷ */
+    /* ç”±äºé“¾è¡¨æ˜¯æŒ‰è¶…æ—¶æ—¶é—´æ’åºçš„ï¼Œåªéœ€è¦å¤„ç†é“¾è¡¨å‰é¢çš„å®šæ—¶å™¨ */
     ul_list_for_each_safe(node, next, &ul_timer_list)
     {
         timer = ul_list_entry(node, ul_timer_t, node);
 
-        /* Èç¹û»¹Ã»µ½ÆÚ£¬Ö±½Ó·µ»Ø£¬ÒòÎªºóÃæµÄ¶¨Ê±Æ÷¸ü²»»áµ½ÆÚ */
+        /* å¦‚æœè¿˜æ²¡åˆ°æœŸï¼Œç›´æ¥è¿”å›ï¼Œå› ä¸ºåé¢çš„å®šæ—¶å™¨æ›´ä¸ä¼šåˆ°æœŸ */
         if (timer->timeout_tick > current_tick)
         {
             return;
         }
 
-        /* µ÷ÓÃ»Øµ÷º¯Êı */
+        /* è°ƒç”¨å›è°ƒå‡½æ•° */
         if (timer->callback != UL_NULL)
         {
             timer->callback(timer->parameter);
         }
 
-        /* ¸ù¾İ¶¨Ê±Æ÷ÀàĞÍ´¦Àí */
+        /* æ ¹æ®å®šæ—¶å™¨ç±»å‹å¤„ç† */
         if (timer->type == ULOS_TIMER_TYPE_PERIODIC)
         {
-            /* ÖÜÆÚĞÔ¶¨Ê±Æ÷£¬¼ÆËãÏÂ´Î´¥·¢Ê±¼ä */
+            /* å‘¨æœŸæ€§å®šæ—¶å™¨ï¼Œè®¡ç®—ä¸‹æ¬¡è§¦å‘æ—¶é—´ */
             timer->timeout_tick = current_tick + timer->init_tick;
-            /* ÖØĞÂ²åÈëµ½ÕıÈ·Î»ÖÃ */
+            /* é‡æ–°æ’å…¥åˆ°æ­£ç¡®ä½ç½® */
             ul_timer_insert_sorted(timer);
         }
         else
         {
-            /* µ¥´Î¶¨Ê±Æ÷£¬Í£Ö¹ */
+            /* å•æ¬¡å®šæ—¶å™¨ï¼Œåœæ­¢ */
             ul_list_remove(&timer->node);
             timer->stat = ULOS_TIMER_STAT_STOPPED;
         }
@@ -217,7 +217,7 @@ static void ul_timer_process_expired(void)
 }
 
 /**
- * @brief ·¢ËÍ¶¨Ê±Æ÷ÃüÁî
+ * @brief å‘é€å®šæ—¶å™¨å‘½ä»¤
  */
 static ul_ecode ul_timer_send_cmd(ul_timer_t *timer, ul_timer_cmd_t cmd, ul_tick_t timeout)
 {
@@ -232,15 +232,15 @@ static ul_ecode ul_timer_send_cmd(ul_timer_t *timer, ul_timer_cmd_t cmd, ul_tick
     msg.cmd = cmd;
     msg.timer = timer;
     msg.timeout = timeout + current_tick;
-    msg.period = timeout;  /* ÓÃÓÚCHANGE_PERIODÃüÁî */
+    msg.period = timeout;  /* ç”¨äºCHANGE_PERIODå‘½ä»¤ */
 
     return ul_queue_send(timer_cmd_queue, &msg, sizeof(msg), 0);
 }
 
-/* ==================== ¶¨Ê±Æ÷APIÊµÏÖ ==================== */
+/* ==================== å®šæ—¶å™¨APIå®ç° ==================== */
 
 /**
- * @brief ³õÊ¼»¯¶¨Ê±Æ÷
+ * @brief åˆå§‹åŒ–å®šæ—¶å™¨
  */
 ul_ecode ul_timer_init(ul_timer_t *timer,
                        const char *name,
@@ -254,10 +254,10 @@ ul_ecode ul_timer_init(ul_timer_t *timer,
         return UL_ENULL;
     }
 
-    /* ³õÊ¼»¯¶ÔÏó */
+    /* åˆå§‹åŒ–å¯¹è±¡ */
     ul_object_init(name, &timer->parent, UL_OBJECT_CLASS_TIMER);
 
-    /* ³õÊ¼»¯¶¨Ê±Æ÷²ÎÊı */
+    /* åˆå§‹åŒ–å®šæ—¶å™¨å‚æ•° */
     timer->timeout_tick = timeout;
     timer->init_tick = timeout;
     timer->type = type;
@@ -265,14 +265,14 @@ ul_ecode ul_timer_init(ul_timer_t *timer,
     timer->callback = callback;
     timer->parameter = parameter;
 
-    /* ³õÊ¼»¯Á´±í½Úµã */
+    /* åˆå§‹åŒ–é“¾è¡¨èŠ‚ç‚¹ */
     ul_list_init(&timer->node);
 
     return UL_EOK;
 }
 
 /**
- * @brief ´´½¨¶¨Ê±Æ÷
+ * @brief åˆ›å»ºå®šæ—¶å™¨
  */
 ul_timer_t* ul_timer_create(const char *name,
                             ul_timer_callback_t callback,
@@ -297,7 +297,7 @@ ul_timer_t* ul_timer_create(const char *name,
 }
 
 /**
- * @brief É¾³ı¶¨Ê±Æ÷
+ * @brief åˆ é™¤å®šæ—¶å™¨
  */
 ul_ecode ul_timer_delete(ul_timer_t *timer)
 {
@@ -310,7 +310,7 @@ ul_ecode ul_timer_delete(ul_timer_t *timer)
 }
 
 /**
- * @brief Æô¶¯¶¨Ê±Æ÷
+ * @brief å¯åŠ¨å®šæ—¶å™¨
  */
 ul_ecode ul_timer_start(ul_timer_t *timer)
 {
@@ -323,7 +323,7 @@ ul_ecode ul_timer_start(ul_timer_t *timer)
 }
 
 /**
- * @brief Í£Ö¹¶¨Ê±Æ÷
+ * @brief åœæ­¢å®šæ—¶å™¨
  */
 ul_ecode ul_timer_stop(ul_timer_t *timer)
 {
@@ -336,7 +336,7 @@ ul_ecode ul_timer_stop(ul_timer_t *timer)
 }
 
 /**
- * @brief ÖØÖÃ¶¨Ê±Æ÷
+ * @brief é‡ç½®å®šæ—¶å™¨
  */
 ul_ecode ul_timer_reset(ul_timer_t *timer)
 {
@@ -349,7 +349,7 @@ ul_ecode ul_timer_reset(ul_timer_t *timer)
 }
 
 /**
- * @brief ¸Ä±ä¶¨Ê±Æ÷ÖÜÆÚ
+ * @brief æ”¹å˜å®šæ—¶å™¨å‘¨æœŸ
  */
 ul_ecode ul_timer_change_period(ul_timer_t *timer, ul_tick_t new_period)
 {
@@ -362,11 +362,11 @@ ul_ecode ul_timer_change_period(ul_timer_t *timer, ul_tick_t new_period)
 }
 
 /**
- * @brief ³õÊ¼»¯¶¨Ê±Æ÷·şÎñ
+ * @brief åˆå§‹åŒ–å®šæ—¶å™¨æœåŠ¡
  */
 ul_ecode ul_timer_thread_create(void)
 {
-    /* ´´½¨ÃüÁî¶ÓÁĞ */
+    /* åˆ›å»ºå‘½ä»¤é˜Ÿåˆ— */
     timer_cmd_queue = ul_queue_create("ostmq", 10, sizeof(ul_timer_msg_t));
 
     if (timer_cmd_queue == UL_NULL)
@@ -374,12 +374,12 @@ ul_ecode ul_timer_thread_create(void)
         return UL_ERROR;
     }
 
-    /* ´´½¨¶¨Ê±Æ÷Ïß³Ì */
+    /* åˆ›å»ºå®šæ—¶å™¨çº¿ç¨‹ */
     timer_thread = ul_thread_create("ostm",
                                     timer_thread_entry,
                                     UL_NULL,
-                                    ULOS_CONFIG_TIMER_THREAD_STACK_SIZE,/* Õ»´óĞ¡ */
-                                    ULOS_CONFIG_TIMER_THREAD_PRIORITY,  /* ÓÅÏÈ¼¶ */
+                                    ULOS_CONFIG_TIMER_THREAD_STACK_SIZE,/* æ ˆå¤§å° */
+                                    ULOS_CONFIG_TIMER_THREAD_PRIORITY,  /* ä¼˜å…ˆçº§ */
                                     1);
 
     if (timer_thread == UL_NULL)
@@ -389,6 +389,6 @@ ul_ecode ul_timer_thread_create(void)
         return UL_ERROR;
     }
 
-    /* Æô¶¯¶¨Ê±Æ÷Ïß³Ì */
+    /* å¯åŠ¨å®šæ—¶å™¨çº¿ç¨‹ */
     return ul_thread_startup(timer_thread);
 }

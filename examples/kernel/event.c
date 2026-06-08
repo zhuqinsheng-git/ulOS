@@ -11,15 +11,15 @@
 #define EVENT_FLAG3 (1 << 3)
 #define EVENT_FLAG5 (1 << 5)
 
-/* ÊÂ¼þ¿ØÖÆ¿éÖ¸Õë */
+/* äº‹ä»¶æŽ§åˆ¶å—æŒ‡é’ˆ */
 static struct ul_event *event;
 
-/* Ïß³Ì1Èë¿Úº¯Êý */
+/* çº¿ç¨‹1å…¥å£å‡½æ•° */
 static void thread1_recv_event(void *param)
 {
     ul_uint32_t e;
 
-    /* µÚÒ»´Î½ÓÊÕÊÂ¼þ£¬ÊÂ¼þ3»òÊÂ¼þ5ÈÎÒâÒ»¸ö¿ÉÒÔ´¥·¢Ïß³Ì1 */
+    /* ç¬¬ä¸€æ¬¡æŽ¥æ”¶äº‹ä»¶ï¼Œäº‹ä»¶3æˆ–äº‹ä»¶5ä»»æ„ä¸€ä¸ªå¯ä»¥è§¦å‘çº¿ç¨‹1 */
     if (ul_event_recv(event, (EVENT_FLAG3 | EVENT_FLAG5),
                       UL_EVENT_FLAG_OR | UL_EVENT_FLAG_CLEAR,
                       ULOS_MAX_DELAY, &e) == UL_EOK)
@@ -30,7 +30,7 @@ static void thread1_recv_event(void *param)
     ul_kprintf("thread1: delay 1s to prepare the second event\r\n");
     ul_thread_delay(1000);
 
-    /* µÚ¶þ´Î½ÓÊÕÊÂ¼þ£¬ÊÂ¼þ3ºÍÊÂ¼þ5¾ù·¢ÉúÊ±²Å¿ÉÒÔ´¥·¢Ïß³Ì1 */
+    /* ç¬¬äºŒæ¬¡æŽ¥æ”¶äº‹ä»¶ï¼Œäº‹ä»¶3å’Œäº‹ä»¶5å‡å‘ç”Ÿæ—¶æ‰å¯ä»¥è§¦å‘çº¿ç¨‹1 */
     if (ul_event_recv(event, (EVENT_FLAG3 | EVENT_FLAG5),
                       UL_EVENT_FLAG_AND | UL_EVENT_FLAG_CLEAR,
                       ULOS_MAX_DELAY, &e) == UL_EOK)
@@ -44,7 +44,7 @@ static void thread1_recv_event(void *param)
     return;
 }
 
-/* Ïß³Ì2Èë¿Ú */
+/* çº¿ç¨‹2å…¥å£ */
 static void thread2_send_event(void *param)
 {
     ul_kprintf("thread2: send event3\r\n");
@@ -59,7 +59,7 @@ static void thread2_send_event(void *param)
     ul_event_send(event, EVENT_FLAG3);
     ul_kprintf("thread2 leave.\r\n");
 
-    /* Ïß³ÌÍË³öÊ±É¾³ý×Ô¼º */  
+    /* çº¿ç¨‹é€€å‡ºæ—¶åˆ é™¤è‡ªå·± */  
     return;
 }
 
@@ -67,7 +67,7 @@ int example_event(void)
 {
     struct ul_thread *thread1, *thread2;
 
-    /* ´´½¨ÊÂ¼þ¶ÔÏó */
+    /* åˆ›å»ºäº‹ä»¶å¯¹è±¡ */
     event = ul_event_create("event");
     if (event == NULL)
     {
@@ -75,7 +75,7 @@ int example_event(void)
         return -1;
     }
 
-    /* ´´½¨Ïß³Ì1 */
+    /* åˆ›å»ºçº¿ç¨‹1 */
     thread1 = ul_thread_create("eventt1",
                              thread1_recv_event,
                              NULL,
@@ -90,7 +90,7 @@ int example_event(void)
     }
     ul_thread_startup(thread1);
     
-    /* ´´½¨Ïß³Ì2 */
+    /* åˆ›å»ºçº¿ç¨‹2 */
     thread2 = ul_thread_create("eventt2",
                              thread2_send_event,
                              NULL,

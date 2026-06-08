@@ -5,7 +5,7 @@
  */
 #include "ul_libc.h"
 
-/* ==================== ÄÚ´æ²Ù×÷º¯ÊıÊµÏÖ ==================== */
+/* ==================== å†…å­˜æ“ä½œå‡½æ•°å®ç° ==================== */
 
 void *ul_memcpy(void *dest, const void *src, ul_size_t n)
 {
@@ -15,7 +15,7 @@ void *ul_memcpy(void *dest, const void *src, ul_size_t n)
     char *d = (char *)dest;
     const char *s = (const char *)src;
     
-    /* Öğ×Ö½Ú¿½±´ */
+    /* é€å­—èŠ‚æ‹·è´ */
     for (ul_size_t i = 0; i < n; i++) {
         d[i] = s[i];
     }
@@ -32,17 +32,17 @@ void *ul_memmove(void *dest, const void *src, ul_size_t n)
     const char *s = (const char *)src;
     
     if (d == s) {
-        return dest;  /* Ô´ºÍÄ¿±êÏàÍ¬ */
+        return dest;  /* æºå’Œç›®æ ‡ç›¸åŒ */
     }
     
-    /* ¼ì²éÖØµşÇé¿ö */
+    /* æ£€æŸ¥é‡å æƒ…å†µ */
     if (d > s && d < s + n) {
-        /* ´ÓºóÏòÇ°¿½±´£¨ÕıÏòÖØµş£© */
+        /* ä»åå‘å‰æ‹·è´ï¼ˆæ­£å‘é‡å ï¼‰ */
         for (ul_size_t i = n; i > 0; i--) {
             d[i - 1] = s[i - 1];
         }
     } else {
-        /* ´ÓÇ°Ïòºó¿½±´ */
+        /* ä»å‰å‘åæ‹·è´ */
         for (ul_size_t i = 0; i < n; i++) {
             d[i] = s[i];
         }
@@ -98,7 +98,7 @@ void *ul_memchr(const void *s, int c, ul_size_t n)
     return UL_NULL;
 }
 
-/* ==================== ×Ö·û´®²Ù×÷º¯ÊıÊµÏÖ ==================== */
+/* ==================== å­—ç¬¦ä¸²æ“ä½œå‡½æ•°å®ç° ==================== */
 
 char *ul_strcpy(char *dest, const char *src)
 {
@@ -108,7 +108,7 @@ char *ul_strcpy(char *dest, const char *src)
     char *d = dest;
     
     while ((*d++ = *src++) != '\0') {
-        /* ¿ÕÑ­»·Ìå */
+        /* ç©ºå¾ªç¯ä½“ */
     }
     
     return dest;
@@ -126,7 +126,7 @@ char *ul_strncpy(char *dest, const char *src, ul_size_t n)
         d[i] = src[i];
     }
     
-    /* Ìî³äÊ£Óà¿Õ¼äÎª0 */
+    /* å¡«å……å‰©ä½™ç©ºé—´ä¸º0 */
     for (; i < n; i++) {
         d[i] = '\0';
     }
@@ -141,14 +141,14 @@ char *ul_strcat(char *dest, const char *src)
     
     char *d = dest;
     
-    /* ÕÒµ½destµÄ½áÎ² */
+    /* æ‰¾åˆ°destçš„ç»“å°¾ */
     while (*d != '\0') {
         d++;
     }
     
-    /* ×·¼Ósrc */
+    /* è¿½åŠ src */
     while ((*d++ = *src++) != '\0') {
-        /* ¿ÕÑ­»·Ìå */
+        /* ç©ºå¾ªç¯ä½“ */
     }
     
     return dest;
@@ -161,18 +161,18 @@ char *ul_strncat(char *dest, const char *src, ul_size_t n)
     
     char *d = dest;
     
-    /* ÕÒµ½destµÄ½áÎ² */
+    /* æ‰¾åˆ°destçš„ç»“å°¾ */
     while (*d != '\0') {
         d++;
     }
     
-    /* ×·¼Ósrc£¨×î¶àn¸ö×Ö·û£© */
+    /* è¿½åŠ srcï¼ˆæœ€å¤šnä¸ªå­—ç¬¦ï¼‰ */
     ul_size_t i;
     for (i = 0; i < n && src[i] != '\0'; i++) {
         d[i] = src[i];
     }
     
-    d[i] = '\0';  /* È·±£ÒÔ0½áÎ² */
+    d[i] = '\0';  /* ç¡®ä¿ä»¥0ç»“å°¾ */
     
     return dest;
 }
@@ -275,7 +275,7 @@ char *ul_strstr(const char *haystack, const char *needle)
     return UL_NULL;
 }
 
-/* ==================== ×Ö·û´®/Êı×Ö×ª»»º¯ÊıÊµÏÖ ==================== */
+/* ==================== å­—ç¬¦ä¸²/æ•°å­—è½¬æ¢å‡½æ•°å®ç° ==================== */
 
 int ul_atoi(const char *nptr)
 {
@@ -284,12 +284,12 @@ int ul_atoi(const char *nptr)
     int result = 0;
     int sign = 1;
     
-    /* Ìø¹ıÇ°µ¼¿Õ°××Ö·û */
+    /* è·³è¿‡å‰å¯¼ç©ºç™½å­—ç¬¦ */
     while (ul_isspace(*nptr)) {
         nptr++;
     }
     
-    /* ´¦Àí·ûºÅ */
+    /* å¤„ç†ç¬¦å· */
     if (*nptr == '-') {
         sign = -1;
         nptr++;
@@ -297,7 +297,7 @@ int ul_atoi(const char *nptr)
         nptr++;
     }
     
-    /* ×ª»»Êı×Ö */
+    /* è½¬æ¢æ•°å­— */
     while (ul_isdigit(*nptr)) {
         result = result * 10 + (*nptr - '0');
         nptr++;
@@ -316,34 +316,34 @@ char *ul_itoa(int value, char *str, int base)
     char *end;
     int negative = 0;
     
-    /* ´¦Àí0 */
+    /* å¤„ç†0 */
     if (value == 0) {
         *ptr++ = '0';
         *ptr = '\0';
         return str;
     }
     
-    /* ´¦Àí¸ºÊı£¨Ö»¶Ô10½øÖÆ£© */
+    /* å¤„ç†è´Ÿæ•°ï¼ˆåªå¯¹10è¿›åˆ¶ï¼‰ */
     if (value < 0 && base == 10) {
         negative = 1;
         value = -value;
     }
     
-    /* ×ª»»Êı×Ö£¨·´Ïò£© */
+    /* è½¬æ¢æ•°å­—ï¼ˆåå‘ï¼‰ */
     while (value != 0) {
         int remainder = value % base;
         *ptr++ = (remainder > 9) ? (remainder - 10) + 'a' : remainder + '0';
         value = value / base;
     }
     
-    /* Ìí¼Ó¸ººÅ */
+    /* æ·»åŠ è´Ÿå· */
     if (negative) {
         *ptr++ = '-';
     }
     
     *ptr = '\0';
     
-    /* ·´×ª×Ö·û´® */
+    /* åè½¬å­—ç¬¦ä¸² */
     end = ptr - 1;
     while (start < end) {
         char temp = *start;
@@ -356,7 +356,7 @@ char *ul_itoa(int value, char *str, int base)
     return str;
 }
 
-/* ==================== ×Ö·û·ÖÀàº¯ÊıÊµÏÖ ==================== */
+/* ==================== å­—ç¬¦åˆ†ç±»å‡½æ•°å®ç° ==================== */
 
 int ul_isdigit(int c)
 {

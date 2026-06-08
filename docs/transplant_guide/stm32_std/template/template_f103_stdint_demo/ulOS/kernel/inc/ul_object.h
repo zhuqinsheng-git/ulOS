@@ -102,16 +102,16 @@ ul_inline void ul_list_insert_before(ul_list_t *l, ul_list_t *n)
 #define ul_list_for_each(pos, head) \
     for (pos = (head)->next; pos != (head); pos = pos->next)
 
-// °²È«±éÀúºê£¨ÔÊĞíÉ¾³ı½Úµã£©
+// å®‰å…¨éå†å®ï¼ˆå…è®¸åˆ é™¤èŠ‚ç‚¹ï¼‰
 #define ul_list_for_each_safe(pos, n, head) \
     for (pos = (head)->next, n = pos->next; pos != (head); \
          pos = n, n = pos->next)
 
-// ·´Ïò±éÀúºê
+// åå‘éå†å®
 #define ul_list_for_each_prev(pos, head) \
     for (pos = (head)->prev; pos != (head); pos = pos->prev)
 
-// ·´Ïò°²È«±éÀúºê
+// åå‘å®‰å…¨éå†å®
 #define ul_list_for_each_prev_safe(pos, n, head) \
     for (pos = (head)->prev, n = pos->prev; pos != (head); \
          pos = n, n = pos->prev)
@@ -125,7 +125,7 @@ ul_inline void ul_list_insert_before(ul_list_t *l, ul_list_t *n)
 #define ul_list_entry(node, type, member) \
     ((type *)((char *)(node) - (unsigned long)(&((type *)0)->member)))
 
-// ±éÀúÁ´±í²¢»ñÈ¡°üº¬½á¹¹Ìå£¨°²È«°æ±¾£©
+// éå†é“¾è¡¨å¹¶è·å–åŒ…å«ç»“æ„ä½“ï¼ˆå®‰å…¨ç‰ˆæœ¬ï¼‰
 #define ul_list_for_each_entry_safe(pos, n, head, member) \
     for (pos = ul_list_entry((head)->next, typeof(*pos), member), \
          n = ul_list_entry(pos->member.next, typeof(*pos), member); \
@@ -167,7 +167,7 @@ typedef enum
     UL_OBJECT_CLASS_MAX
 } ul_object_class_type;
     
-// ¶ÔÏó»ùÀà
+// å¯¹è±¡åŸºç±»
 typedef struct ul_object 
 {
     char                        name[UL_OBJECT_NAME_MAX_LENGTH];
@@ -176,7 +176,7 @@ typedef struct ul_object
     ul_list_t                   node;
 } ul_object_t;
 
-// ¶ÔÏó¹ÜÀí½Ó¿Ú
+// å¯¹è±¡ç®¡ç†æ¥å£
 ul_ecode ul_object_init(const char* name, ul_object_t* object, ul_object_class_type type);
 ul_ecode ul_object_unregister(ul_object_t* object);
 ul_object_t* ul_object_find(const char* name, ul_object_class_type type);

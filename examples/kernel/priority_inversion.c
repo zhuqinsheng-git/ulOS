@@ -2,90 +2,90 @@
 #include "ul_thread.h"
 #include "ul_mutex.h"
 
-/* ¶¨ÒåÈı¸öÈÎÎñ£¬ÓÅÏÈ¼¶´Ó¸ßµ½µÍ */
+/* å®šä¹‰ä¸‰ä¸ªä»»åŠ¡ï¼Œä¼˜å…ˆçº§ä»é«˜åˆ°ä½ */
 #define HIGH_PRIORITY     0
 #define MEDIUM_PRIORITY   1
 #define LOW_PRIORITY      2
 
-/* ¹²Ïí×ÊÔ´¼ÆÊıÆ÷ */
+/* å…±äº«èµ„æºè®¡æ•°å™¨ */
 static ul_uint32_t shared_counter = 0;
 
-/* »¥³âËø */
+/* äº’æ–¥é” */
 static ul_mutex_t test_mutex;
 
-/* ¸ßÓÅÏÈ¼¶ÈÎÎñ */
+/* é«˜ä¼˜å…ˆçº§ä»»åŠ¡ */
 void high_priority_task(void *param)
 {
-    /* ÈÃµÍÓÅÏÈ¼¶ÈÎÎñÏÈÔËĞĞ²¢»ñÈ¡»¥³âËø */
+    /* è®©ä½ä¼˜å…ˆçº§ä»»åŠ¡å…ˆè¿è¡Œå¹¶è·å–äº’æ–¥é” */
     ul_thread_delay(100);
     while (1) {
-        /* ³¢ÊÔ»ñÈ¡»¥³âËø */
+        /* å°è¯•è·å–äº’æ–¥é” */
         if (ul_mutex_lock(&test_mutex, ULOS_MAX_DELAY) == UL_EOK) {
-            /* ·ÃÎÊ¹²Ïí×ÊÔ´ */
+            /* è®¿é—®å…±äº«èµ„æº */
             shared_counter++;
             ul_kprintf("High priority task: counter = %d\r\n", shared_counter);
             
-            /* Ä£Äâ´¦ÀíÊ±¼ä */
+            /* æ¨¡æ‹Ÿå¤„ç†æ—¶é—´ */
             ul_thread_delay(10);
             
-            /* ÊÍ·Å»¥³âËø */
+            /* é‡Šæ”¾äº’æ–¥é” */
             ul_mutex_unlock(&test_mutex);
         }
         
-        /* ÈÎÎñÑÓÊ±£¬ÈÃÆäËûÈÎÎñÓĞ»ú»áÔËĞĞ */
+        /* ä»»åŠ¡å»¶æ—¶ï¼Œè®©å…¶ä»–ä»»åŠ¡æœ‰æœºä¼šè¿è¡Œ */
         ul_thread_delay(100);
     }
 }
 
-/* ÖĞÓÅÏÈ¼¶ÈÎÎñ */
+/* ä¸­ä¼˜å…ˆçº§ä»»åŠ¡ */
 void medium_priority_task(void *param)
 {
-    /* ÈÃµÍÓÅÏÈ¼¶ÈÎÎñÏÈÔËĞĞ²¢»ñÈ¡»¥³âËø */
+    /* è®©ä½ä¼˜å…ˆçº§ä»»åŠ¡å…ˆè¿è¡Œå¹¶è·å–äº’æ–¥é” */
     ul_thread_delay(100);
     while (1) {
-        /* Ä£ÄâCPUÃÜ¼¯ĞÍÈÎÎñ */
+        /* æ¨¡æ‹ŸCPUå¯†é›†å‹ä»»åŠ¡ */
         for (volatile ul_uint32_t i = 0; i < 1000000; i++);
         
         ul_kprintf("Medium priority task running\r\n");
         
-        /* ¶ÌÔİÑÓÊ± */
+        /* çŸ­æš‚å»¶æ—¶ */
         ul_thread_delay(50);
     }
 }
 
-/* µÍÓÅÏÈ¼¶ÈÎÎñ */
+/* ä½ä¼˜å…ˆçº§ä»»åŠ¡ */
 void low_priority_task(void *param)
 {
     while (1) {
-        /* »ñÈ¡»¥³âËø */
+        /* è·å–äº’æ–¥é” */
         if (ul_mutex_lock(&test_mutex, ULOS_MAX_DELAY) == UL_EOK) {
             ul_kprintf("Low priority task got mutex\r\n");
             
-            /* Ä£Äâ³¤Ê±¼äÕ¼ÓÃ¹²Ïí×ÊÔ´ */
+            /* æ¨¡æ‹Ÿé•¿æ—¶é—´å ç”¨å…±äº«èµ„æº */
             ul_thread_delay(500);
             
-            /* ·ÃÎÊ¹²Ïí×ÊÔ´ */
+            /* è®¿é—®å…±äº«èµ„æº */
             shared_counter++;
             ul_kprintf("Low priority task: counter = %d\r\n", shared_counter);
             
-            /* ÊÍ·Å»¥³âËø */
+            /* é‡Šæ”¾äº’æ–¥é” */
             ul_mutex_unlock(&test_mutex);
         }
         
-        /* ÈÎÎñÑÓÊ± */
+        /* ä»»åŠ¡å»¶æ—¶ */
         ul_thread_delay(100);
     }
 }
 
-/* ²âÊÔº¯Êı */
+/* æµ‹è¯•å‡½æ•° */
 void example_priority_inversion(void)
 {
     struct ul_thread *high_task, *medium_task, *low_task;
     
-    /* ³õÊ¼»¯»¥³âËø */
+    /* åˆå§‹åŒ–äº’æ–¥é” */
     ul_mutex_init(&test_mutex, "te");
     
-    /* ´´½¨µÍÓÅÏÈ¼¶ÈÎÎñ */
+    /* åˆ›å»ºä½ä¼˜å…ˆçº§ä»»åŠ¡ */
     low_task = ul_thread_create("low",
                                low_priority_task,
                                NULL,
@@ -94,10 +94,10 @@ void example_priority_inversion(void)
                                10);
     ul_thread_startup(low_task);
     
-    /* ÈÃµÍÓÅÏÈ¼¶ÈÎÎñÏÈÔËĞĞ²¢»ñÈ¡»¥³âËø */
+    /* è®©ä½ä¼˜å…ˆçº§ä»»åŠ¡å…ˆè¿è¡Œå¹¶è·å–äº’æ–¥é” */
     //ul_thread_delay(100);
     
-    /* ´´½¨ÖĞÓÅÏÈ¼¶ÈÎÎñ */
+    /* åˆ›å»ºä¸­ä¼˜å…ˆçº§ä»»åŠ¡ */
     medium_task = ul_thread_create("medium",
                                   medium_priority_task,
                                   NULL,
@@ -106,7 +106,7 @@ void example_priority_inversion(void)
                                   10);
     ul_thread_startup(medium_task);
     
-    /* ´´½¨¸ßÓÅÏÈ¼¶ÈÎÎñ */
+    /* åˆ›å»ºé«˜ä¼˜å…ˆçº§ä»»åŠ¡ */
     high_task = ul_thread_create("high",
                                 high_priority_task,
                                 NULL,

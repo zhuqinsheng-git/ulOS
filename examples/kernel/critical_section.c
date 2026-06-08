@@ -7,7 +7,7 @@ uint32_t shared_counter = 0;
 ul_thread_t *test1;
 ul_thread_t *test2;
 
-// ²âÊÔÏß³Ì1
+// æµ‹è¯•çº¿ç¨‹1
 static void test_thread1(void* p)
 {
     ul_base_t level;
@@ -39,7 +39,7 @@ static void test_thread1(void* p)
     }
 }
 
-// ²âÊÔÏß³Ì2
+// æµ‹è¯•çº¿ç¨‹2
 static void test_thread2(void* p)
 {
     ul_base_t level;

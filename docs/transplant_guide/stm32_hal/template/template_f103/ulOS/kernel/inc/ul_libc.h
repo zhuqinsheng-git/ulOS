@@ -12,196 +12,196 @@
 extern "C" {
 #endif
 
-/* ==================== ÄÚ´æ²Ù×÷º¯Êý ==================== */
+/* ==================== å†…å­˜æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ÄÚ´æ¿½±´
- * @param dest Ä¿±êÄÚ´æµØÖ·
- * @param src Ô´ÄÚ´æµØÖ·  
- * @param n ¿½±´×Ö½ÚÊý
- * @return Ä¿±êÄÚ´æµØÖ·
+ * @brief å†…å­˜æ‹·è´
+ * @param dest ç›®æ ‡å†…å­˜åœ°å€
+ * @param src æºå†…å­˜åœ°å€  
+ * @param n æ‹·è´å­—èŠ‚æ•°
+ * @return ç›®æ ‡å†…å­˜åœ°å€
  */
 void *ul_memcpy(void *dest, const void *src, ul_size_t n);
 
 /**
- * @brief ÄÚ´æÒÆ¶¯£¨´¦ÀíÖØµþÇøÓò£©
- * @param dest Ä¿±êÄÚ´æµØÖ·
- * @param src Ô´ÄÚ´æµØÖ·
- * @param n ÒÆ¶¯×Ö½ÚÊý
- * @return Ä¿±êÄÚ´æµØÖ·
+ * @brief å†…å­˜ç§»åŠ¨ï¼ˆå¤„ç†é‡å åŒºåŸŸï¼‰
+ * @param dest ç›®æ ‡å†…å­˜åœ°å€
+ * @param src æºå†…å­˜åœ°å€
+ * @param n ç§»åŠ¨å­—èŠ‚æ•°
+ * @return ç›®æ ‡å†…å­˜åœ°å€
  */
 void *ul_memmove(void *dest, const void *src, ul_size_t n);
 
 /**
- * @brief ÄÚ´æÉèÖÃ
- * @param s ÄÚ´æµØÖ·
- * @param c ÉèÖÃµÄÖµ
- * @param n ÉèÖÃ×Ö½ÚÊý
- * @return ÄÚ´æµØÖ·
+ * @brief å†…å­˜è®¾ç½®
+ * @param s å†…å­˜åœ°å€
+ * @param c è®¾ç½®çš„å€¼
+ * @param n è®¾ç½®å­—èŠ‚æ•°
+ * @return å†…å­˜åœ°å€
  */
 void *ul_memset(void *s, int c, ul_size_t n);
 
 /**
- * @brief ÄÚ´æ±È½Ï
- * @param s1 ÄÚ´æ¿é1
- * @param s2 ÄÚ´æ¿é2
- * @param n ±È½Ï×Ö½ÚÊý
- * @return ÏàµÈ·µ»Ø0£¬s1>s2·µ»Ø>0£¬s1<s2·µ»Ø<0
+ * @brief å†…å­˜æ¯”è¾ƒ
+ * @param s1 å†…å­˜å—1
+ * @param s2 å†…å­˜å—2
+ * @param n æ¯”è¾ƒå­—èŠ‚æ•°
+ * @return ç›¸ç­‰è¿”å›ž0ï¼Œs1>s2è¿”å›ž>0ï¼Œs1<s2è¿”å›ž<0
  */
 int ul_memcmp(const void *s1, const void *s2, ul_size_t n);
 
 /**
- * @brief ÄÚ´æ²éÕÒ
- * @param s ÄÚ´æµØÖ·
- * @param c ²éÕÒµÄ×Ö·û
- * @param n ²éÕÒ·¶Î§×Ö½ÚÊý
- * @return ÕÒµ½·µ»ØÎ»ÖÃÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+ * @brief å†…å­˜æŸ¥æ‰¾
+ * @param s å†…å­˜åœ°å€
+ * @param c æŸ¥æ‰¾çš„å­—ç¬¦
+ * @param n æŸ¥æ‰¾èŒƒå›´å­—èŠ‚æ•°
+ * @return æ‰¾åˆ°è¿”å›žä½ç½®æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
  */
 void *ul_memchr(const void *s, int c, ul_size_t n);
 
-/* ==================== ×Ö·û´®²Ù×÷º¯Êý ==================== */
+/* ==================== å­—ç¬¦ä¸²æ“ä½œå‡½æ•° ==================== */
 
 /**
- * @brief ×Ö·û´®¿½±´
- * @param dest Ä¿±ê×Ö·û´®
- * @param src Ô´×Ö·û´®
- * @return Ä¿±ê×Ö·û´®
+ * @brief å­—ç¬¦ä¸²æ‹·è´
+ * @param dest ç›®æ ‡å­—ç¬¦ä¸²
+ * @param src æºå­—ç¬¦ä¸²
+ * @return ç›®æ ‡å­—ç¬¦ä¸²
  */
 char *ul_strcpy(char *dest, const char *src);
 
 /**
- * @brief ×Ö·û´®¿½±´£¨ÏÞÖÆ³¤¶È£©
- * @param dest Ä¿±ê×Ö·û´®
- * @param src Ô´×Ö·û´®
- * @param n ×î´ó¿½±´×Ö·ûÊý
- * @return Ä¿±ê×Ö·û´®
+ * @brief å­—ç¬¦ä¸²æ‹·è´ï¼ˆé™åˆ¶é•¿åº¦ï¼‰
+ * @param dest ç›®æ ‡å­—ç¬¦ä¸²
+ * @param src æºå­—ç¬¦ä¸²
+ * @param n æœ€å¤§æ‹·è´å­—ç¬¦æ•°
+ * @return ç›®æ ‡å­—ç¬¦ä¸²
  */
 char *ul_strncpy(char *dest, const char *src, ul_size_t n);
 
 /**
- * @brief ×Ö·û´®Á¬½Ó
- * @param dest Ä¿±ê×Ö·û´®
- * @param src Ô´×Ö·û´®
- * @return Ä¿±ê×Ö·û´®
+ * @brief å­—ç¬¦ä¸²è¿žæŽ¥
+ * @param dest ç›®æ ‡å­—ç¬¦ä¸²
+ * @param src æºå­—ç¬¦ä¸²
+ * @return ç›®æ ‡å­—ç¬¦ä¸²
  */
 char *ul_strcat(char *dest, const char *src);
 
 /**
- * @brief ×Ö·û´®Á¬½Ó£¨ÏÞÖÆ³¤¶È£©
- * @param dest Ä¿±ê×Ö·û´®
- * @param src Ô´×Ö·û´®
- * @param n ×î´óÁ¬½Ó×Ö·ûÊý
- * @return Ä¿±ê×Ö·û´®
+ * @brief å­—ç¬¦ä¸²è¿žæŽ¥ï¼ˆé™åˆ¶é•¿åº¦ï¼‰
+ * @param dest ç›®æ ‡å­—ç¬¦ä¸²
+ * @param src æºå­—ç¬¦ä¸²
+ * @param n æœ€å¤§è¿žæŽ¥å­—ç¬¦æ•°
+ * @return ç›®æ ‡å­—ç¬¦ä¸²
  */
 char *ul_strncat(char *dest, const char *src, ul_size_t n);
 
 /**
- * @brief ×Ö·û´®±È½Ï
- * @param s1 ×Ö·û´®1
- * @param s2 ×Ö·û´®2
- * @return ÏàµÈ·µ»Ø0£¬s1>s2·µ»Ø>0£¬s1<s2·µ»Ø<0
+ * @brief å­—ç¬¦ä¸²æ¯”è¾ƒ
+ * @param s1 å­—ç¬¦ä¸²1
+ * @param s2 å­—ç¬¦ä¸²2
+ * @return ç›¸ç­‰è¿”å›ž0ï¼Œs1>s2è¿”å›ž>0ï¼Œs1<s2è¿”å›ž<0
  */
 int ul_strcmp(const char *s1, const char *s2);
 
 /**
- * @brief ×Ö·û´®±È½Ï£¨ÏÞÖÆ³¤¶È£©
- * @param s1 ×Ö·û´®1
- * @param s2 ×Ö·û´®2
- * @param n ×î´ó±È½Ï×Ö·ûÊý
- * @return ÏàµÈ·µ»Ø0£¬s1>s2·µ»Ø>0£¬s1<s2·µ»Ø<0
+ * @brief å­—ç¬¦ä¸²æ¯”è¾ƒï¼ˆé™åˆ¶é•¿åº¦ï¼‰
+ * @param s1 å­—ç¬¦ä¸²1
+ * @param s2 å­—ç¬¦ä¸²2
+ * @param n æœ€å¤§æ¯”è¾ƒå­—ç¬¦æ•°
+ * @return ç›¸ç­‰è¿”å›ž0ï¼Œs1>s2è¿”å›ž>0ï¼Œs1<s2è¿”å›ž<0
  */
 int ul_strncmp(const char *s1, const char *s2, ul_size_t n);
 
 /**
- * @brief ×Ö·û´®³¤¶È
- * @param s ×Ö·û´®
- * @return ×Ö·û´®³¤¶È£¨²»º¬½áÊø·û£©
+ * @brief å­—ç¬¦ä¸²é•¿åº¦
+ * @param s å­—ç¬¦ä¸²
+ * @return å­—ç¬¦ä¸²é•¿åº¦ï¼ˆä¸å«ç»“æŸç¬¦ï¼‰
  */
 ul_size_t ul_strlen(const char *s);
 
 /**
- * @brief ×Ö·û´®²éÕÒ×Ö·û
- * @param s ×Ö·û´®
- * @param c ²éÕÒµÄ×Ö·û
- * @return ÕÒµ½·µ»ØÎ»ÖÃÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+ * @brief å­—ç¬¦ä¸²æŸ¥æ‰¾å­—ç¬¦
+ * @param s å­—ç¬¦ä¸²
+ * @param c æŸ¥æ‰¾çš„å­—ç¬¦
+ * @return æ‰¾åˆ°è¿”å›žä½ç½®æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
  */
 char *ul_strchr(const char *s, int c);
 
 /**
- * @brief ×Ö·û´®²éÕÒ×Ö·û£¨´ÓÄ©Î²£©
- * @param s ×Ö·û´®
- * @param c ²éÕÒµÄ×Ö·û
- * @return ÕÒµ½·µ»ØÎ»ÖÃÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+ * @brief å­—ç¬¦ä¸²æŸ¥æ‰¾å­—ç¬¦ï¼ˆä»Žæœ«å°¾ï¼‰
+ * @param s å­—ç¬¦ä¸²
+ * @param c æŸ¥æ‰¾çš„å­—ç¬¦
+ * @return æ‰¾åˆ°è¿”å›žä½ç½®æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
  */
 char *ul_strrchr(const char *s, int c);
 
 /**
- * @brief ×Ö·û´®²éÕÒ×Ó´®
- * @param haystack Ö÷×Ö·û´®
- * @param needle ×Ó×Ö·û´®
- * @return ÕÒµ½·µ»ØÎ»ÖÃÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+ * @brief å­—ç¬¦ä¸²æŸ¥æ‰¾å­ä¸²
+ * @param haystack ä¸»å­—ç¬¦ä¸²
+ * @param needle å­å­—ç¬¦ä¸²
+ * @return æ‰¾åˆ°è¿”å›žä½ç½®æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
  */
 char *ul_strstr(const char *haystack, const char *needle);
 
-/* ==================== ×Ö·û´®/Êý×Ö×ª»»º¯Êý ==================== */
+/* ==================== å­—ç¬¦ä¸²/æ•°å­—è½¬æ¢å‡½æ•° ==================== */
 
 /**
- * @brief ×Ö·û´®×ªÕûÊý
- * @param nptr Êý×Ö×Ö·û´®
- * @return ×ª»»ºóµÄÕûÊýÖµ
+ * @brief å­—ç¬¦ä¸²è½¬æ•´æ•°
+ * @param nptr æ•°å­—å­—ç¬¦ä¸²
+ * @return è½¬æ¢åŽçš„æ•´æ•°å€¼
  */
 int ul_atoi(const char *nptr);
 
 /**
- * @brief ÕûÊý×ª×Ö·û´®
- * @param value ÕûÊýÖµ
- * @param str Êä³ö»º³åÇø
- * @param base ½øÖÆ£¨2-36£©
- * @return ×Ö·û´®Ö¸Õë
+ * @brief æ•´æ•°è½¬å­—ç¬¦ä¸²
+ * @param value æ•´æ•°å€¼
+ * @param str è¾“å‡ºç¼“å†²åŒº
+ * @param base è¿›åˆ¶ï¼ˆ2-36ï¼‰
+ * @return å­—ç¬¦ä¸²æŒ‡é’ˆ
  */
 char *ul_itoa(int value, char *str, int base);
 
-/* ==================== ×Ö·û·ÖÀàº¯Êý ==================== */
+/* ==================== å­—ç¬¦åˆ†ç±»å‡½æ•° ==================== */
 
 /**
- * @brief ÅÐ¶ÏÊÇ·ñÎªÊý×Ö×Ö·û
- * @param c ×Ö·û
- * @return ÊÇÊý×Ö·µ»Ø1£¬·ñÔò·µ»Ø0
+ * @brief åˆ¤æ–­æ˜¯å¦ä¸ºæ•°å­—å­—ç¬¦
+ * @param c å­—ç¬¦
+ * @return æ˜¯æ•°å­—è¿”å›ž1ï¼Œå¦åˆ™è¿”å›ž0
  */
 int ul_isdigit(int c);
 
 /**
- * @brief ÅÐ¶ÏÊÇ·ñÎª×ÖÄ¸×Ö·û
- * @param c ×Ö·û
- * @return ÊÇ×ÖÄ¸·µ»Ø1£¬·ñÔò·µ»Ø0
+ * @brief åˆ¤æ–­æ˜¯å¦ä¸ºå­—æ¯å­—ç¬¦
+ * @param c å­—ç¬¦
+ * @return æ˜¯å­—æ¯è¿”å›ž1ï¼Œå¦åˆ™è¿”å›ž0
  */
 int ul_isalpha(int c);
 
 /**
- * @brief ÅÐ¶ÏÊÇ·ñÎª×ÖÄ¸»òÊý×Ö×Ö·û
- * @param c ×Ö·û
- * @return ÊÇ×ÖÄ¸»òÊý×Ö·µ»Ø1£¬·ñÔò·µ»Ø0
+ * @brief åˆ¤æ–­æ˜¯å¦ä¸ºå­—æ¯æˆ–æ•°å­—å­—ç¬¦
+ * @param c å­—ç¬¦
+ * @return æ˜¯å­—æ¯æˆ–æ•°å­—è¿”å›ž1ï¼Œå¦åˆ™è¿”å›ž0
  */
 int ul_isalnum(int c);
 
 /**
- * @brief ÅÐ¶ÏÊÇ·ñÎª¿Õ°××Ö·û
- * @param c ×Ö·û
- * @return ÊÇ¿Õ°××Ö·û·µ»Ø1£¬·ñÔò·µ»Ø0
+ * @brief åˆ¤æ–­æ˜¯å¦ä¸ºç©ºç™½å­—ç¬¦
+ * @param c å­—ç¬¦
+ * @return æ˜¯ç©ºç™½å­—ç¬¦è¿”å›ž1ï¼Œå¦åˆ™è¿”å›ž0
  */
 int ul_isspace(int c);
 
 /**
- * @brief ×Ö·û×ªÐ¡Ð´
- * @param c ×Ö·û
- * @return Ð¡Ð´×Ö·û
+ * @brief å­—ç¬¦è½¬å°å†™
+ * @param c å­—ç¬¦
+ * @return å°å†™å­—ç¬¦
  */
 int ul_tolower(int c);
 
 /**
- * @brief ×Ö·û×ª´óÐ´
- * @param c ×Ö·û
- * @return ´óÐ´×Ö·û
+ * @brief å­—ç¬¦è½¬å¤§å†™
+ * @param c å­—ç¬¦
+ * @return å¤§å†™å­—ç¬¦
  */
 int ul_toupper(int c);
 

@@ -3,18 +3,18 @@
 #include "ul_thread.h"
 #include "ul_ipc.h"
 #include "ulos_example.h"
-/* ²âÊÔÓÃµÄÏûÏ¢½á¹¹Ìå */
+/* æµ‹è¯•ç”¨çš„æ¶ˆæ¯ç»“æ„ä½“ */
 typedef struct {
-    char name[16];    /* ×Ö·û´® */
-    int number;       /* Êı×Ö */
+    char name[16];    /* å­—ç¬¦ä¸² */
+    int number;       /* æ•°å­— */
 } test_msg_t;
 
-/* È«¾Ö¶ÓÁĞ */
+/* å…¨å±€é˜Ÿåˆ— */
 ul_thread_t *producer_tid;
 ul_thread_t *consumer_tid;
 ul_queue_t *test_queue;
 
-/* Éú²úÕßÏß³Ì */
+/* ç”Ÿäº§è€…çº¿ç¨‹ */
 void producer_thread(void *arg)
 {
     test_msg_t msg;
@@ -24,11 +24,11 @@ void producer_thread(void *arg)
     ul_kprintf("Producer thread started\r\n");
 
     while (1) {
-        /* ×¼±¸ÏûÏ¢ */
+        /* å‡†å¤‡æ¶ˆæ¯ */
         snprintf(msg.name, sizeof(msg.name), "msg%d", i);
         msg.number = i * 100;
 
-        /* ·¢ËÍÏûÏ¢ */
+        /* å‘é€æ¶ˆæ¯ */
         err = ul_queue_send_urgent(test_queue, &msg, sizeof(test_msg_t), UL_FALSE);
         ul_enter_critical();
         if (err == UL_EOK) {
@@ -41,12 +41,12 @@ void producer_thread(void *arg)
         ul_exit_critical();
         i++;
         
-        /* ÑÓÊ±Ò»¶ÎÊ±¼ä */
-        ul_thread_delay(300);  /* ÑÓÊ±1Ãë */
+        /* å»¶æ—¶ä¸€æ®µæ—¶é—´ */
+        ul_thread_delay(300);  /* å»¶æ—¶1ç§’ */
     }
 }
 
-/* Ïû·ÑÕßÏß³Ì */
+/* æ¶ˆè´¹è€…çº¿ç¨‹ */
 void consumer_thread(void *arg)
 {
     test_msg_t recv_msg;
@@ -55,7 +55,7 @@ void consumer_thread(void *arg)
     ul_kprintf("Consumer thread started\r\n");
 
     while (1) {
-        /* ½ÓÊÕÏûÏ¢ */
+        /* æ¥æ”¶æ¶ˆæ¯ */
         err = ul_queue_receive(test_queue, &recv_msg, sizeof(test_msg_t), ULOS_MAX_DELAY);
         ul_enter_critical();
         if (err == UL_EOK) {
@@ -66,12 +66,12 @@ void consumer_thread(void *arg)
             ul_kprintf("Consumer receive failed\r\n");
         }
         ul_exit_critical();
-        /* Ä£Äâ´¦ÀíÊ±¼ä */
-        ul_thread_delay(500);  /* ÑÓÊ±500ms */
+        /* æ¨¡æ‹Ÿå¤„ç†æ—¶é—´ */
+        ul_thread_delay(500);  /* å»¶æ—¶500ms */
     }
 }
 
-/* ¶ÓÁĞ²âÊÔº¯Êı */
+/* é˜Ÿåˆ—æµ‹è¯•å‡½æ•° */
 void queue_test_start_thread(void *p)
 {
     ul_kprintf("=== Multi-thread Queue Test Start ===\r\n");
@@ -81,27 +81,27 @@ void queue_test_start_thread(void *p)
     
     ul_kprintf("Queue created successfully\r\n");
 
-    /* ´´½¨Éú²úÕßÏß³Ì */
+    /* åˆ›å»ºç”Ÿäº§è€…çº¿ç¨‹ */
     producer_tid = ul_thread_create("producer", producer_thread, NULL, 
                         1024, 1, 1);
 
     ul_kprintf("Producer thread created\r\n");
     ul_thread_startup(producer_tid);
     
-    /* ´´½¨Ïû·ÑÕßÏß³Ì */
+    /* åˆ›å»ºæ¶ˆè´¹è€…çº¿ç¨‹ */
     consumer_tid = ul_thread_create("consumer", consumer_thread, NULL,
                         1024, 1, 1);
     ul_kprintf("Consumer thread created\r\n");
     ul_thread_startup(consumer_tid);
     
-    /* Ö÷Ïß³ÌµÈ´ıÒ»¶ÎÊ±¼ä */
-    ul_thread_delay(10000);  /* ÔËĞĞ10Ãë */
+    /* ä¸»çº¿ç¨‹ç­‰å¾…ä¸€æ®µæ—¶é—´ */
+    ul_thread_delay(10000);  /* è¿è¡Œ10ç§’ */
 
-    /* É¾³ıÏß³Ì */
+    /* åˆ é™¤çº¿ç¨‹ */
     ul_thread_delete(producer_tid);
 //    ul_thread_delete(consumer_tid);
 
-    /* É¾³ı¶ÓÁĞ */
+    /* åˆ é™¤é˜Ÿåˆ— */
     //ul_queue_delete(test_queue);
 
     ul_kprintf("=== Multi-thread Queue Test End ===\r\n");
@@ -109,13 +109,13 @@ void queue_test_start_thread(void *p)
     return;
 }
 
-/* ²âÊÔº¯Êı */
+/* æµ‹è¯•å‡½æ•° */
 void example_queue(void)
 {
     struct ul_thread *main;
     
     
-    /* ´´½¨µÍÓÅÏÈ¼¶ÈÎÎñ */
+    /* åˆ›å»ºä½ä¼˜å…ˆçº§ä»»åŠ¡ */
     main = ul_thread_create("start",
                                queue_test_start_thread,
                                NULL,

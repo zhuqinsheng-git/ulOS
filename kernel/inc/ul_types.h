@@ -47,27 +47,27 @@ typedef bool                ul_bool_t;
 /* Error Codes */
 typedef enum {
     /* Success */
-    UL_EOK = 0,             /* ³É¹¦ */
+    UL_EOK = 0,             /* æˆåŠŸ */
 
     /* General Errors */
-    UL_ERROR = -1,          /* Í¨ÓÃ´íÎó */
-    UL_ENULL = -2,          /* ¿ÕÖ¸Õë´íÎó */
-    UL_EINVAL = -3,         /* ÎÞÐ§²ÎÊý */
-    UL_ENOMEM = -4,         /* ÄÚ´æ²»×ã */
-    UL_ENOENT = -5,         /* ¶ÔÏó²»´æÔÚ */
-    UL_EPERM = -6,          /* ²Ù×÷²»±»ÔÊÐí */
-    UL_EBUSY = -7,          /* ×ÊÔ´Ã¦ */
-    UL_EEXIST = -8,         /* ¶ÔÏóÒÑ´æÔÚ */
+    UL_ERROR = -1,          /* é€šç”¨é”™è¯¯ */
+    UL_ENULL = -2,          /* ç©ºæŒ‡é’ˆé”™è¯¯ */
+    UL_EINVAL = -3,         /* æ— æ•ˆå‚æ•° */
+    UL_ENOMEM = -4,         /* å†…å­˜ä¸è¶³ */
+    UL_ENOENT = -5,         /* å¯¹è±¡ä¸å­˜åœ¨ */
+    UL_EPERM = -6,          /* æ“ä½œä¸è¢«å…è®¸ */
+    UL_EBUSY = -7,          /* èµ„æºå¿™ */
+    UL_EEXIST = -8,         /* å¯¹è±¡å·²å­˜åœ¨ */
 
     /* Timeout Errors */
-    UL_ETIMEOUT = -9,       /* ²Ù×÷³¬Ê± */
+    UL_ETIMEOUT = -9,       /* æ“ä½œè¶…æ—¶ */
 
     /* IPC Errors */
-    UL_EFULL = -10,         /* ¶ÓÁÐ/»º³åÇøÂú */
-    UL_EEMPTY = -11,        /* ¶ÓÁÐ/»º³åÇø¿Õ */
+    UL_EFULL = -10,         /* é˜Ÿåˆ—/ç¼“å†²åŒºæ»¡ */
+    UL_EEMPTY = -11,        /* é˜Ÿåˆ—/ç¼“å†²åŒºç©º */
 
     /* Thread Errors */
-    UL_ETHREAD = -12,       /* Ïß³Ì´íÎó */
+    UL_ETHREAD = -12,       /* çº¿ç¨‹é”™è¯¯ */
 } ul_ecode;
 
 

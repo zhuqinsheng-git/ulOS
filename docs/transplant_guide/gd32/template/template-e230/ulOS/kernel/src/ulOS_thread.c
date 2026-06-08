@@ -8,17 +8,17 @@
 #include "ul_libc.h"
 #include "ulOS_idle.h"
 
-/* ==================== È«¾Ö±äÁ¿¶¨Òå ==================== */
-volatile ul_tick_t ulOS_tick = 0;                    // ÏµÍ³Ê±ÖÓ¼ÆÊı
-static volatile ul_uint8_t ulOS_start_flag = 0;        // ÏµÍ³Æô¶¯±êÖ¾
-struct ul_thread *ul_current_thread;                  // µ±Ç°ÔËĞĞÏß³ÌÖ¸Õë
-static ul_uint8_t ul_current_highest_priority = ULOS_CONFIG_MAX_PRIORITY;  // µ±Ç°×î¸ßÓÅÏÈ¼¶
-static ul_base_t ul_scheduler_lock_count = 0;          // µ÷¶ÈÆ÷Ëø¼ÆÊıÆ÷
-static ul_list_t ul_ready_thread_list[ULOS_CONFIG_MAX_PRIORITY];  // ¾ÍĞ÷Ïß³Ì¶ÓÁĞÊı×é
-static ul_list_t ul_delay_thread_list;                       // ÑÓÊ±Ïß³Ì¶ÓÁĞ
-static ul_tick_t ul_next_wake_time = ULOS_MAX_TICK;          // ÏÂÒ»¸ö»½ĞÑÊ±¼ä
+/* ==================== å…¨å±€å˜é‡å®šä¹‰ ==================== */
+volatile ul_tick_t ulOS_tick = 0;                    // ç³»ç»Ÿæ—¶é’Ÿè®¡æ•°
+static volatile ul_uint8_t ulOS_start_flag = 0;        // ç³»ç»Ÿå¯åŠ¨æ ‡å¿—
+struct ul_thread *ul_current_thread;                  // å½“å‰è¿è¡Œçº¿ç¨‹æŒ‡é’ˆ
+static ul_uint8_t ul_current_highest_priority = ULOS_CONFIG_MAX_PRIORITY;  // å½“å‰æœ€é«˜ä¼˜å…ˆçº§
+static ul_base_t ul_scheduler_lock_count = 0;          // è°ƒåº¦å™¨é”è®¡æ•°å™¨
+static ul_list_t ul_ready_thread_list[ULOS_CONFIG_MAX_PRIORITY];  // å°±ç»ªçº¿ç¨‹é˜Ÿåˆ—æ•°ç»„
+static ul_list_t ul_delay_thread_list;                       // å»¶æ—¶çº¿ç¨‹é˜Ÿåˆ—
+static ul_tick_t ul_next_wake_time = ULOS_MAX_TICK;          // ä¸‹ä¸€ä¸ªå”¤é†’æ—¶é—´
 
-/* Íâ²¿º¯ÊıÉùÃ÷ */
+/* å¤–éƒ¨å‡½æ•°å£°æ˜ */
 extern void ul_hw_context_switch(ul_uint32_t from, ul_uint32_t to);
 extern void ul_hw_context_switch_to(ul_uint32_t to);
 extern ul_base_t ul_hw_interrupt_disable(void);
@@ -27,29 +27,29 @@ extern ul_uint8_t *ul_hw_stack_init(void *tentry, void *parameter,
                                     ul_uint8_t *stack_addr, void *texit);
 extern ul_list_t ul_defunct_thread_list;
 
-/* ==================== Ïß³Ì¹ÜÀíÏà¹Øº¯Êı ==================== */
+/* ==================== çº¿ç¨‹ç®¡ç†ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief Ïß³ÌÍË³ö´¦Àíº¯Êı
+ * @brief çº¿ç¨‹é€€å‡ºå¤„ç†å‡½æ•°
  */
 static void thread_exit_entry(void)
 {
-    // ´Ó¾ÍĞ÷¶ÓÁĞºÍIPC¶ÓÁĞÖĞÒÆ³ı
+    // ä»å°±ç»ªé˜Ÿåˆ—å’ŒIPCé˜Ÿåˆ—ä¸­ç§»é™¤
     ul_list_remove(&ul_current_thread->tlist);
     ul_list_remove(&ul_current_thread->ipc_list);
 
-    // ¼ÓÈëµ½´ıÉ¾³ıÏß³ÌÁĞ±í
+    // åŠ å…¥åˆ°å¾…åˆ é™¤çº¿ç¨‹åˆ—è¡¨
     ul_list_insert_before(&ul_defunct_thread_list, &ul_current_thread->tlist);
 
-    // ¸üĞÂÏß³Ì×´Ì¬
+    // æ›´æ–°çº¿ç¨‹çŠ¶æ€
     ul_current_thread->state = UL_THREAD_STATE_CLOSE;
 
-    // ´¥·¢µ÷¶È
+    // è§¦å‘è°ƒåº¦
     ul_schedule();
 }
 
 /**
- * @brief ³õÊ¼»¯Ïß³Ì
+ * @brief åˆå§‹åŒ–çº¿ç¨‹
  */
 ul_ecode ul_thread_init(struct ul_thread *self,
                         const char *name,
@@ -65,10 +65,10 @@ ul_ecode ul_thread_init(struct ul_thread *self,
         return UL_ENULL;
     }
 
-    // ³õÊ¼»¯Ïß³Ì¶ÔÏó
+    // åˆå§‹åŒ–çº¿ç¨‹å¯¹è±¡
     ul_object_init(name, &self->parent, UL_OBJECT_CLASS_THREAD);
 
-    // ÉèÖÃÏß³Ì»ù±¾ÊôĞÔ
+    // è®¾ç½®çº¿ç¨‹åŸºæœ¬å±æ€§
     self->stack_start = stack_start;
     self->stack_size = stack_size;
     self->entry = entry;
@@ -79,14 +79,14 @@ ul_ecode ul_thread_init(struct ul_thread *self,
     self->remaining_tick = time_slice;
     self->init_tick = time_slice;
 
-    // ³õÊ¼»¯Á´±í½Úµã
+    // åˆå§‹åŒ–é“¾è¡¨èŠ‚ç‚¹
     ul_list_init(&self->tlist);
     ul_list_init(&self->ipc_list);
 
-    // ³õÊ¼»¯Õ»¿Õ¼ä
+    // åˆå§‹åŒ–æ ˆç©ºé—´
     ul_memset(self->stack_start, '#', self->stack_size);
 
-    // ³õÊ¼»¯Õ»¶¥Ö¸Õë
+    // åˆå§‹åŒ–æ ˆé¡¶æŒ‡é’ˆ
     self->stack_top = (void *)ul_hw_stack_init(self->entry, self->parameter,
                       (ul_uint8_t *)((char *)self->stack_start + self->stack_size),
                       (void *)thread_exit_entry);
@@ -95,7 +95,7 @@ ul_ecode ul_thread_init(struct ul_thread *self,
 }
 
 /**
- * @brief ´´½¨Ïß³Ì
+ * @brief åˆ›å»ºçº¿ç¨‹
  */
 ul_thread_t* ul_thread_create(const char *name,
                               void (*entry)(void *p),
@@ -104,7 +104,7 @@ ul_thread_t* ul_thread_create(const char *name,
                               ul_uint8_t priority,
                               ul_uint8_t time_slice)
 {
-    // ·ÖÅäÏß³Ì¿ØÖÆ¿é
+    // åˆ†é…çº¿ç¨‹æ§åˆ¶å—
     struct ul_thread *self = ul_malloc(sizeof(struct ul_thread));
 
     if (self == UL_NULL)
@@ -112,7 +112,7 @@ ul_thread_t* ul_thread_create(const char *name,
         return UL_NULL;
     }
 
-    // ·ÖÅäÕ»¿Õ¼ä
+    // åˆ†é…æ ˆç©ºé—´
     void *stack = ul_malloc(stack_size);
 
     if (stack == UL_NULL)
@@ -121,14 +121,14 @@ ul_thread_t* ul_thread_create(const char *name,
         return UL_NULL;
     }
 
-    // ³õÊ¼»¯Ïß³Ì
+    // åˆå§‹åŒ–çº¿ç¨‹
     ul_thread_init(self, name, entry, parameter, stack, stack_size, priority, time_slice);
 
     return self;
 }
 
 /**
- * @brief É¾³ıÏß³Ì
+ * @brief åˆ é™¤çº¿ç¨‹
  */
 void ul_thread_delete(ul_thread_t *thread)
 {
@@ -137,19 +137,19 @@ void ul_thread_delete(ul_thread_t *thread)
         return;
     }
 
-    // ´Ó¶ÓÁĞÖĞÒÆ³ı
+    // ä»é˜Ÿåˆ—ä¸­ç§»é™¤
     ul_list_remove(&thread->tlist);
     ul_list_remove(&thread->ipc_list);
 
-    // ¼ÓÈë´ıÉ¾³ıÁĞ±í
+    // åŠ å…¥å¾…åˆ é™¤åˆ—è¡¨
     ul_list_insert_before(&ul_defunct_thread_list, &thread->tlist);
 
-    // ¸üĞÂ×´Ì¬
+    // æ›´æ–°çŠ¶æ€
     thread->state = UL_THREAD_STATE_CLOSE;
 }
 
 /**
- * @brief »ñÈ¡µ±Ç°Ïß³Ì
+ * @brief è·å–å½“å‰çº¿ç¨‹
  */
 ul_thread_t* ul_thread_self(void)
 {
@@ -157,7 +157,7 @@ ul_thread_t* ul_thread_self(void)
 }
 
 /**
- * @brief »ñÈ¡Ïß³ÌÊ£ÓàÕ»¿Õ¼ä
+ * @brief è·å–çº¿ç¨‹å‰©ä½™æ ˆç©ºé—´
  */
 ul_size_t ul_thread_stack_remain(ul_thread_t *thread)
 {
@@ -169,7 +169,7 @@ ul_size_t ul_thread_stack_remain(ul_thread_t *thread)
     ul_uint8_t *stack_bottom = (ul_uint8_t *)thread->stack_start;
     ul_size_t remain_size = 0;
 
-    // ´ÓÕ»µ×¿ªÊ¼Í³¼ÆÁ¬ĞøµÄ'#'×Ö·û
+    // ä»æ ˆåº•å¼€å§‹ç»Ÿè®¡è¿ç»­çš„'#'å­—ç¬¦
     while (*stack_bottom == '#' &&
             (ul_size_t)stack_bottom < (ul_size_t)thread->stack_start + thread->stack_size)
     {
@@ -181,36 +181,36 @@ ul_size_t ul_thread_stack_remain(ul_thread_t *thread)
 }
 
 /**
- * @brief ²éÕÒÏß³Ì¶ÔÏó
+ * @brief æŸ¥æ‰¾çº¿ç¨‹å¯¹è±¡
  */
 ul_thread_t* ul_thread_find(const char *name)
 {
     return (ul_thread_t*)ul_object_find(name, UL_OBJECT_CLASS_THREAD);
 }
-/* ==================== µ÷¶ÈÆ÷Ïà¹Øº¯Êı ==================== */
+/* ==================== è°ƒåº¦å™¨ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯µ÷¶ÈÆ÷
+ * @brief åˆå§‹åŒ–è°ƒåº¦å™¨
  */
 void ul_scheduler_init(void)
 {
-    // ³õÊ¼»¯¾ÍĞ÷¶ÓÁĞ
+    // åˆå§‹åŒ–å°±ç»ªé˜Ÿåˆ—
     for (int i = 0; i < ULOS_CONFIG_MAX_PRIORITY; i++)
     {
         ul_list_init(&ul_ready_thread_list[i]);
     }
 
-    // ³õÊ¼»¯ÑÓÊ±¶ÓÁĞ
+    // åˆå§‹åŒ–å»¶æ—¶é˜Ÿåˆ—
     ul_list_init(&ul_delay_thread_list);
 }
 
 /**
- * @brief ²éÕÒ×î¸ßÓÅÏÈ¼¶
- * @return ×î¸ßÓÅÏÈ¼¶Öµ
+ * @brief æŸ¥æ‰¾æœ€é«˜ä¼˜å…ˆçº§
+ * @return æœ€é«˜ä¼˜å…ˆçº§å€¼
  */
 static ul_uint8_t ul_find_highest_priority(void)
 {
-    // ´Ó×î¸ßÓÅÏÈ¼¶(0)¿ªÊ¼²éÕÒ
+    // ä»æœ€é«˜ä¼˜å…ˆçº§(0)å¼€å§‹æŸ¥æ‰¾
     for (ul_uint8_t priority = 0; priority < ULOS_CONFIG_MAX_PRIORITY; priority++)
     {
         if (!ul_list_isempty(&ul_ready_thread_list[priority]))
@@ -219,26 +219,26 @@ static ul_uint8_t ul_find_highest_priority(void)
         }
     }
 
-    return ULOS_CONFIG_MAX_PRIORITY;  // Ã»ÓĞ¾ÍĞ÷ÈÎÎñ
+    return ULOS_CONFIG_MAX_PRIORITY;  // æ²¡æœ‰å°±ç»ªä»»åŠ¡
 }
 
 /**
- * @brief ½«Ïß³Ì²åÈë¾ÍĞ÷¶ÓÁĞ
+ * @brief å°†çº¿ç¨‹æ’å…¥å°±ç»ªé˜Ÿåˆ—
  */
 void _thread_insert_ready_list(struct ul_thread *thread)
 {
-    // È·±£Ïß³ÌÒÑ´ÓÔ­¶ÓÁĞÒÆ³ı
+    // ç¡®ä¿çº¿ç¨‹å·²ä»åŸé˜Ÿåˆ—ç§»é™¤
     if (!ul_list_isempty(&thread->tlist))
     {
         ul_list_remove(&thread->tlist);
     }
 
-    // ²åÈë¶ÔÓ¦ÓÅÏÈ¼¶¶ÓÁĞ
+    // æ’å…¥å¯¹åº”ä¼˜å…ˆçº§é˜Ÿåˆ—
     ul_uint8_t priority = thread->current_priority;
     ul_list_insert_before(&ul_ready_thread_list[priority], &thread->tlist);
     thread->state = UL_THREAD_STATE_READY;
 
-    // ¸üĞÂ×î¸ßÓÅÏÈ¼¶
+    // æ›´æ–°æœ€é«˜ä¼˜å…ˆçº§
     if (priority < ul_current_highest_priority)
     {
         ul_current_highest_priority = priority;
@@ -246,14 +246,14 @@ void _thread_insert_ready_list(struct ul_thread *thread)
 }
 
 /**
- * @brief ´Ó¾ÍĞ÷¶ÓÁĞÒÆ³ıÏß³Ì
+ * @brief ä»å°±ç»ªé˜Ÿåˆ—ç§»é™¤çº¿ç¨‹
  */
 void _thread_remove_ready_list(struct ul_thread *thread)
 {
     ul_list_remove(&thread->tlist);
     thread->state &= (~UL_THREAD_STATE_READY);
 
-    // Èç¹ûÒÆ³ıµÄÊÇµ±Ç°×î¸ßÓÅÏÈ¼¶ÈÎÎñ£¬ĞèÒªÖØĞÂ²éÕÒ
+    // å¦‚æœç§»é™¤çš„æ˜¯å½“å‰æœ€é«˜ä¼˜å…ˆçº§ä»»åŠ¡ï¼Œéœ€è¦é‡æ–°æŸ¥æ‰¾
     if (thread->current_priority == ul_current_highest_priority)
     {
         ul_current_highest_priority = ul_find_highest_priority();
@@ -261,46 +261,46 @@ void _thread_remove_ready_list(struct ul_thread *thread)
 }
 
 /**
- * @brief Æô¶¯µ÷¶ÈÆ÷
+ * @brief å¯åŠ¨è°ƒåº¦å™¨
  */
 void ul_scheduler_start(void)
 {
     struct ul_thread *to_thread;
 
-    // ²éÕÒ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
+    // æŸ¥æ‰¾æœ€é«˜ä¼˜å…ˆçº§ä»»åŠ¡
     ul_current_highest_priority = ul_find_highest_priority();
     to_thread = ul_list_entry(ul_ready_thread_list[ul_current_highest_priority].next,
                               struct ul_thread, tlist);
 
-    // ÉèÖÃµ±Ç°ÈÎÎñ
+    // è®¾ç½®å½“å‰ä»»åŠ¡
     ul_current_thread = to_thread;
     to_thread->state = UL_THREAD_STATE_RUNNING;
     _thread_remove_ready_list(to_thread);
 
-    // Æô¶¯µ÷¶È
+    // å¯åŠ¨è°ƒåº¦
     ul_hw_interrupt_disable();
     ulOS_start_flag = 1;
     ul_hw_context_switch_to((ul_uint32_t)&to_thread->stack_top);
 }
 
 /**
- * @brief ÈÎÎñµ÷¶Èº¯Êı
+ * @brief ä»»åŠ¡è°ƒåº¦å‡½æ•°
  */
 void ul_schedule(void)
 {
     struct ul_thread *to_thread;
     struct ul_thread *from_thread;
 
-    // ¼ì²éµ÷¶ÈÆ÷Ëø
+    // æ£€æŸ¥è°ƒåº¦å™¨é”
     if (ul_scheduler_lock_count > 0)
     {
         return;
     }
 
-    // ¹ØÖĞ¶Ï
+    // å…³ä¸­æ–­
     ul_base_t level = ul_hw_interrupt_disable();
 
-    // ²éÕÒ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
+    // æŸ¥æ‰¾æœ€é«˜ä¼˜å…ˆçº§ä»»åŠ¡
     ul_current_highest_priority = ul_find_highest_priority();
 
     if (ul_current_highest_priority == ULOS_CONFIG_MAX_PRIORITY)
@@ -309,25 +309,25 @@ void ul_schedule(void)
         return;
     }
 
-    // »ñÈ¡ÒªÇĞ»»µÄÈÎÎñ
+    // è·å–è¦åˆ‡æ¢çš„ä»»åŠ¡
     to_thread = ul_list_entry(ul_ready_thread_list[ul_current_highest_priority].next,
                               struct ul_thread, tlist);
 
-    // Èç¹ûÊÇµ±Ç°ÈÎÎñ£¬²»ĞèÒªÇĞ»»
+    // å¦‚æœæ˜¯å½“å‰ä»»åŠ¡ï¼Œä¸éœ€è¦åˆ‡æ¢
     if (to_thread == ul_current_thread)
     {
         ul_hw_interrupt_enable(level);
         return;
     }
 
-    // ´¦Àíµ±Ç°ÈÎÎñ
+    // å¤„ç†å½“å‰ä»»åŠ¡
     if (ul_current_thread->state == UL_THREAD_STATE_RUNNING)
     {
         _thread_remove_ready_list(ul_current_thread);
         _thread_insert_ready_list(ul_current_thread);
     }
 
-    // ÇĞ»»ÉÏÏÂÎÄ
+    // åˆ‡æ¢ä¸Šä¸‹æ–‡
     from_thread = ul_current_thread;
     ul_current_thread = to_thread;
     to_thread->state = UL_THREAD_STATE_RUNNING;
@@ -338,10 +338,10 @@ void ul_schedule(void)
     ul_hw_interrupt_enable(level);
 }
 
-/* ==================== Ïß³Ì¿ØÖÆÏà¹Øº¯Êı ==================== */
+/* ==================== çº¿ç¨‹æ§åˆ¶ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief Æô¶¯Ïß³Ì
+ * @brief å¯åŠ¨çº¿ç¨‹
  */
 ul_ecode ul_thread_startup(struct ul_thread *self)
 {
@@ -350,13 +350,13 @@ ul_ecode ul_thread_startup(struct ul_thread *self)
         return UL_ENULL;
     }
 
-    // ¼ÓÈë¾ÍĞ÷¶ÓÁĞ
+    // åŠ å…¥å°±ç»ªé˜Ÿåˆ—
     _thread_insert_ready_list(self);
     return UL_EOK;
 }
 
 /**
- * @brief ÉèÖÃÏß³ÌÓÅÏÈ¼¶
+ * @brief è®¾ç½®çº¿ç¨‹ä¼˜å…ˆçº§
  */
 ul_ecode ul_thread_control_set_priority(struct ul_thread *thread, ul_uint8_t priority)
 {
@@ -372,16 +372,16 @@ ul_ecode ul_thread_control_set_priority(struct ul_thread *thread, ul_uint8_t pri
 
     ul_base_t level = ul_hw_interrupt_disable();
 
-    // ¸üĞÂÓÅÏÈ¼¶
+    // æ›´æ–°ä¼˜å…ˆçº§
     thread->current_priority = priority;
 
-    // Èç¹ûÏß³ÌÕıÔÚÔËĞĞ»ò¾ÍĞ÷£¬ÖØĞÂ²åÈë¶ÓÁĞ
+    // å¦‚æœçº¿ç¨‹æ­£åœ¨è¿è¡Œæˆ–å°±ç»ªï¼Œé‡æ–°æ’å…¥é˜Ÿåˆ—
     if (thread->state & UL_THREAD_STATE_READY )
     {
         _thread_remove_ready_list(thread);
         _thread_insert_ready_list(thread);
 
-        // Èç¹ûÊÇµ±Ç°ÔËĞĞÏß³Ì£¬ÇÒĞÂÓÅÏÈ¼¶±Èµ±Ç°×î¸ßÓÅÏÈ¼¶µÍ£¬´¥·¢µ÷¶È
+        // å¦‚æœæ˜¯å½“å‰è¿è¡Œçº¿ç¨‹ï¼Œä¸”æ–°ä¼˜å…ˆçº§æ¯”å½“å‰æœ€é«˜ä¼˜å…ˆçº§ä½ï¼Œè§¦å‘è°ƒåº¦
         if (thread == ul_current_thread &&
                 priority > ul_current_highest_priority)
         {
@@ -396,20 +396,20 @@ ul_ecode ul_thread_control_set_priority(struct ul_thread *thread, ul_uint8_t pri
 }
 
 /**
- * @brief »ñÈ¡Ïß³ÌÓÅÏÈ¼¶
+ * @brief è·å–çº¿ç¨‹ä¼˜å…ˆçº§
  */
 ul_uint8_t ul_thread_control_get_priority(struct ul_thread *thread)
 {
     if (thread == UL_NULL)
     {
-        return ULOS_CONFIG_MAX_PRIORITY;  // ·µ»ØÎŞĞ§ÓÅÏÈ¼¶
+        return ULOS_CONFIG_MAX_PRIORITY;  // è¿”å›æ— æ•ˆä¼˜å…ˆçº§
     }
 
     return thread->current_priority;
 }
 
 /**
- * @brief »Ö¸´Ïß³Ìµ½³õÊ¼ÓÅÏÈ¼¶
+ * @brief æ¢å¤çº¿ç¨‹åˆ°åˆå§‹ä¼˜å…ˆçº§
  */
 ul_ecode ul_thread_control_restore_priority(struct ul_thread *thread)
 {
@@ -421,10 +421,10 @@ ul_ecode ul_thread_control_restore_priority(struct ul_thread *thread)
     return ul_thread_control_set_priority(thread, thread->init_priority);
 }
 
-/* ==================== ÑÓÊ±Ïà¹Øº¯Êı ==================== */
+/* ==================== å»¶æ—¶ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief ¸üĞÂÏÂÒ»¸ö»½ĞÑÊ±¼ä
+ * @brief æ›´æ–°ä¸‹ä¸€ä¸ªå”¤é†’æ—¶é—´
  */
 void _update_next_wake_time(void)
 {
@@ -444,7 +444,7 @@ void _update_next_wake_time(void)
 }
 
 /**
- * @brief Ïß³ÌÑÓÊ±
+ * @brief çº¿ç¨‹å»¶æ—¶
  */
 void ul_thread_delay(ul_tick_t xTicksToDelay)
 {
@@ -454,15 +454,15 @@ void ul_thread_delay(ul_tick_t xTicksToDelay)
 
     level = ul_hw_interrupt_disable();
 
-    // ¼ÆËã»½ĞÑÊ±¼ä
+    // è®¡ç®—å”¤é†’æ—¶é—´
     xTimeToWake = (xTicksToDelay == ULOS_MAX_DELAY) ?
                   ULOS_MAX_DELAY : ulOS_tick + xTicksToDelay;
     pxCurrentTCB->wake_tick = xTimeToWake;
 
-    // ´Ó¾ÍĞ÷¶ÓÁĞÒÆ³ı
+    // ä»å°±ç»ªé˜Ÿåˆ—ç§»é™¤
     _thread_remove_ready_list(pxCurrentTCB);
 
-    // °´»½ĞÑÊ±¼ä²åÈëÑÓÊ±¶ÓÁĞ
+    // æŒ‰å”¤é†’æ—¶é—´æ’å…¥å»¶æ—¶é˜Ÿåˆ—
     ul_list_t *pxIterator;
     struct ul_thread *pxNextTCB;
     ul_bool_t inserted = UL_FALSE;
@@ -492,7 +492,7 @@ void ul_thread_delay(ul_tick_t xTicksToDelay)
 }
 
 /**
- * @brief ¾«È·ÑÓÊ±
+ * @brief ç²¾ç¡®å»¶æ—¶
  */
 void ul_thread_delay_until(ul_tick_t *const pxPreviousWakeTime, const ul_tick_t xTimeIncrement)
 {
@@ -505,7 +505,7 @@ void ul_thread_delay_until(ul_tick_t *const pxPreviousWakeTime, const ul_tick_t 
     thread->wake_tick = xTimeToWake;
     _thread_remove_ready_list(thread);
 
-    // ²åÈëÑÓÊ±¶ÓÁĞ
+    // æ’å…¥å»¶æ—¶é˜Ÿåˆ—
     ul_list_t *iterator;
     struct ul_thread *next_thread;
     ul_bool_t inserted = UL_FALSE;
@@ -534,7 +534,7 @@ void ul_thread_delay_until(ul_tick_t *const pxPreviousWakeTime, const ul_tick_t 
 }
 
 /**
- * @brief ¹ÒÆğÏß³Ì
+ * @brief æŒ‚èµ·çº¿ç¨‹
  */
 void ul_thread_suspend(struct ul_thread *self)
 {
@@ -545,7 +545,7 @@ void ul_thread_suspend(struct ul_thread *self)
 
     ul_base_t level = ul_hw_interrupt_disable();
 
-    // ¸ù¾İÏß³Ì×´Ì¬½øĞĞ²»Í¬´¦Àí
+    // æ ¹æ®çº¿ç¨‹çŠ¶æ€è¿›è¡Œä¸åŒå¤„ç†
     if (self->state & UL_THREAD_STATE_READY)
     {
         ul_list_remove(&self->tlist);
@@ -569,7 +569,7 @@ void ul_thread_suspend(struct ul_thread *self)
 }
 
 /**
- * @brief »Ö¸´Ïß³Ì
+ * @brief æ¢å¤çº¿ç¨‹
  */
 void ul_thread_resume(struct ul_thread *self)
 {
@@ -589,10 +589,10 @@ void ul_thread_resume(struct ul_thread *self)
     ul_hw_interrupt_enable(level);
 }
 
-/* ==================== ÏµÍ³Ê±ÖÓÏà¹Øº¯Êı ==================== */
+/* ==================== ç³»ç»Ÿæ—¶é’Ÿç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief ÏµÍ³Ê±ÖÓÖĞ¶Ï´¦Àíº¯Êı
+ * @brief ç³»ç»Ÿæ—¶é’Ÿä¸­æ–­å¤„ç†å‡½æ•°
  */
 void ul_tick_increase(void)
 {
@@ -611,7 +611,7 @@ void ul_tick_increase(void)
     struct ul_thread *thread = ul_current_thread;
     thread->remaining_tick--;
 
-    // ¼ì²éÑÓÊ±ÈÎÎñ
+    // æ£€æŸ¥å»¶æ—¶ä»»åŠ¡
     if (ulOS_tick >= ul_next_wake_time)
     {
         struct ul_thread *pxTCB;
@@ -639,7 +639,7 @@ void ul_tick_increase(void)
         }
     }
 
-    // ¼ì²éÊÇ·ñĞèÒªµ÷¶È
+    // æ£€æŸ¥æ˜¯å¦éœ€è¦è°ƒåº¦
     ul_uint8_t highest_priority = ul_find_highest_priority();
 
     if (thread->remaining_tick == 0 || highest_priority < thread->current_priority)
@@ -653,10 +653,10 @@ void ul_tick_increase(void)
     }
 }
 
-/* ==================== ÁÙ½çÇøÏà¹Øº¯Êı ==================== */
+/* ==================== ä¸´ç•ŒåŒºç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief ½øÈëÁÙ½çÇø
+ * @brief è¿›å…¥ä¸´ç•ŒåŒº
  */
 void ul_enter_critical(void)
 {
@@ -666,7 +666,7 @@ void ul_enter_critical(void)
 }
 
 /**
- * @brief ÍË³öÁÙ½çÇø
+ * @brief é€€å‡ºä¸´ç•ŒåŒº
  */
 void ul_exit_critical(void)
 {
@@ -688,10 +688,10 @@ void ul_exit_critical(void)
     ul_hw_interrupt_enable(level);
 }
 
-/* ==================== ÏµÍ³³õÊ¼»¯Ïà¹Øº¯Êı ==================== */
+/* ==================== ç³»ç»Ÿåˆå§‹åŒ–ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief »ñÈ¡ÏµÍ³Ê±ÖÓ
+ * @brief è·å–ç³»ç»Ÿæ—¶é’Ÿ
  */
 ul_tick_t ulOS_get_tick(void)
 {
@@ -714,18 +714,18 @@ void topic_thread_entry(void *p)
 #endif
 
 /**
- * @brief ÄÚºË³õÊ¼»¯
+ * @brief å†…æ ¸åˆå§‹åŒ–
  */
 void ul_kernel_init(void)
 {
-    // ³õÊ¼»¯µ÷¶ÈÆ÷
+    // åˆå§‹åŒ–è°ƒåº¦å™¨
     ul_scheduler_init();
     
-    // ´´½¨¿ÕÏĞÏß³Ì
+    // åˆ›å»ºç©ºé—²çº¿ç¨‹
     ul_idle_thread_create();
     
 #if ( ULOS_CONFIG_USE_TOPIC == 1 )
-    // ´´½¨Ö÷Ìâ´¦ÀíÏß³Ì
+    // åˆ›å»ºä¸»é¢˜å¤„ç†çº¿ç¨‹
     static struct ul_thread *topic_thread_handle;
     topic_thread_handle = ul_thread_create("topic",
                                            topic_thread_entry,

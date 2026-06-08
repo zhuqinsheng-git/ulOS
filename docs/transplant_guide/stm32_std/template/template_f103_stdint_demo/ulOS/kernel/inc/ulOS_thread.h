@@ -9,81 +9,81 @@
 
 #include "ul_object.h"
 
-/* ==================== Ã¶¾Ù¶¨Òå ==================== */
+/* ==================== æšä¸¾å®šä¹‰ ==================== */
 
 /**
- * @brief Ïß³Ì×´Ì¬Ã¶¾Ù
+ * @brief çº¿ç¨‹çŠ¶æ€æšä¸¾
  */
 typedef enum
 {
-    UL_THREAD_STATE_INIT     = 0x00,    /* ³õÊ¼»¯×´Ì¬ */
-    UL_THREAD_STATE_READY    = 0x01,    /* ¾ÍĞ÷×´Ì¬ */
-    UL_THREAD_STATE_RUNNING  = 0x02,    /* ÔËĞĞ×´Ì¬ */
-    UL_THREAD_STATE_SUSPEND  = 0x04,    /* ¹ÒÆğ×´Ì¬ */
-    UL_THREAD_STATE_BLOCK    = 0x08,    /* ×èÈû×´Ì¬ */
-    UL_THREAD_STATE_CLOSE    = 0x10,    /* ¹Ø±Õ×´Ì¬ */
+    UL_THREAD_STATE_INIT     = 0x00,    /* åˆå§‹åŒ–çŠ¶æ€ */
+    UL_THREAD_STATE_READY    = 0x01,    /* å°±ç»ªçŠ¶æ€ */
+    UL_THREAD_STATE_RUNNING  = 0x02,    /* è¿è¡ŒçŠ¶æ€ */
+    UL_THREAD_STATE_SUSPEND  = 0x04,    /* æŒ‚èµ·çŠ¶æ€ */
+    UL_THREAD_STATE_BLOCK    = 0x08,    /* é˜»å¡çŠ¶æ€ */
+    UL_THREAD_STATE_CLOSE    = 0x10,    /* å…³é—­çŠ¶æ€ */
     
-    /* ×´Ì¬ÑÚÂë */
-    UL_THREAD_STATE_MASK     = 0x1F,    /* ËùÓĞ×´Ì¬Î»ÑÚÂë */
+    /* çŠ¶æ€æ©ç  */
+    UL_THREAD_STATE_MASK     = 0x1F,    /* æ‰€æœ‰çŠ¶æ€ä½æ©ç  */
 } ul_thread_state_t;
 
-/* ==================== ½á¹¹Ìå¶¨Òå ==================== */
+/* ==================== ç»“æ„ä½“å®šä¹‰ ==================== */
 
 /**
- * @brief Ïß³Ì¿ØÖÆ¿é½á¹¹Ìå
+ * @brief çº¿ç¨‹æ§åˆ¶å—ç»“æ„ä½“
  */
 struct ul_thread
 {
-    /* »ù´¡¶ÔÏó */
-    struct ul_object parent;          /* ¼Ì³Ğ×Ô»ù´¡¶ÔÏó */
+    /* åŸºç¡€å¯¹è±¡ */
+    struct ul_object parent;          /* ç»§æ‰¿è‡ªåŸºç¡€å¯¹è±¡ */
 
-    /* Á´±í½Úµã */
-    ul_list_t tlist;                  /* Ïß³ÌÁ´±í½Úµã */
-    ul_list_t ipc_list;              /* IPCÏà¹ØÁ´±í½Úµã */
+    /* é“¾è¡¨èŠ‚ç‚¹ */
+    ul_list_t tlist;                  /* çº¿ç¨‹é“¾è¡¨èŠ‚ç‚¹ */
+    ul_list_t ipc_list;              /* IPCç›¸å…³é“¾è¡¨èŠ‚ç‚¹ */
 
-    /* Õ»Ïà¹Ø */
-    void* stack_start;               /* Õ»ÆğÊ¼µØÖ· */
-    ul_size_t stack_size;            /* Õ»´óĞ¡ */
-    void* stack_top;                 /* Õ»¶¥Ö¸Õë */
+    /* æ ˆç›¸å…³ */
+    void* stack_start;               /* æ ˆèµ·å§‹åœ°å€ */
+    ul_size_t stack_size;            /* æ ˆå¤§å° */
+    void* stack_top;                 /* æ ˆé¡¶æŒ‡é’ˆ */
 
-    /* Ö´ĞĞÏà¹Ø */
-    void *entry;                     /* Ïß³ÌÈë¿Úº¯Êı */
-    void* parameter;                 /* Èë¿Úº¯Êı²ÎÊı */
+    /* æ‰§è¡Œç›¸å…³ */
+    void *entry;                     /* çº¿ç¨‹å…¥å£å‡½æ•° */
+    void* parameter;                 /* å…¥å£å‡½æ•°å‚æ•° */
 
-    /* ÓÅÏÈ¼¶Ïà¹Ø */
-    ul_uint8_t current_priority;     /* µ±Ç°ÓÅÏÈ¼¶ */
-    ul_uint8_t init_priority;        /* ³õÊ¼ÓÅÏÈ¼¶ */
+    /* ä¼˜å…ˆçº§ç›¸å…³ */
+    ul_uint8_t current_priority;     /* å½“å‰ä¼˜å…ˆçº§ */
+    ul_uint8_t init_priority;        /* åˆå§‹ä¼˜å…ˆçº§ */
 
-    /* ×´Ì¬Ïà¹Ø */
-    ul_thread_state_t state;         /* Ïß³Ì×´Ì¬ */
+    /* çŠ¶æ€ç›¸å…³ */
+    ul_thread_state_t state;         /* çº¿ç¨‹çŠ¶æ€ */
     ul_ecode err;
-    /* Ê±¼äÆ¬Ïà¹Ø */
-    ul_uint8_t remaining_tick;        /* Ê£ÓàÊ±¼äÆ¬ */
-    ul_uint8_t init_tick;            /* ³õÊ¼Ê±¼äÆ¬ */
-    ul_tick_t wake_tick;             /* »½ĞÑÊ±¼ä´Á */
+    /* æ—¶é—´ç‰‡ç›¸å…³ */
+    ul_uint8_t remaining_tick;        /* å‰©ä½™æ—¶é—´ç‰‡ */
+    ul_uint8_t init_tick;            /* åˆå§‹æ—¶é—´ç‰‡ */
+    ul_tick_t wake_tick;             /* å”¤é†’æ—¶é—´æˆ³ */
 
 #if ( ULOS_CONFIG_USE_EVENT == 1 )
-    /* ÊÂ¼şÏà¹Ø */
-    ul_uint32_t event_set;           /* ÊÂ¼ş±êÖ¾ */
-    ul_uint32_t event_info;          /* ÊÂ¼şĞÅÏ¢ */
+    /* äº‹ä»¶ç›¸å…³ */
+    ul_uint32_t event_set;           /* äº‹ä»¶æ ‡å¿— */
+    ul_uint32_t event_info;          /* äº‹ä»¶ä¿¡æ¯ */
 #endif
 };
 
 typedef struct ul_thread ul_thread_t;
 
-/* ==================== Ïß³Ì¹ÜÀíº¯Êı ==================== */
+/* ==================== çº¿ç¨‹ç®¡ç†å‡½æ•° ==================== */
 
 /**
- * @brief ³õÊ¼»¯Ïß³Ì
- * @param self Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @param name Ïß³ÌÃû³Æ
- * @param entry Ïß³ÌÈë¿Úº¯Êı
- * @param parameter Èë¿Úº¯Êı²ÎÊı
- * @param stack_start Õ»ÆğÊ¼µØÖ·
- * @param stack_size Õ»´óĞ¡
- * @param priority ÓÅÏÈ¼¶
- * @param time_slice Ê±¼äÆ¬
- * @return ´íÎóÂë
+ * @brief åˆå§‹åŒ–çº¿ç¨‹
+ * @param self çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @param name çº¿ç¨‹åç§°
+ * @param entry çº¿ç¨‹å…¥å£å‡½æ•°
+ * @param parameter å…¥å£å‡½æ•°å‚æ•°
+ * @param stack_start æ ˆèµ·å§‹åœ°å€
+ * @param stack_size æ ˆå¤§å°
+ * @param priority ä¼˜å…ˆçº§
+ * @param time_slice æ—¶é—´ç‰‡
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_thread_init(struct ul_thread *self,
                         const char *name,
@@ -95,14 +95,14 @@ ul_ecode ul_thread_init(struct ul_thread *self,
                         ul_uint8_t time_slice);
 
 /**
- * @brief ´´½¨Ïß³Ì
- * @param name Ïß³ÌÃû³Æ
- * @param entry Ïß³ÌÈë¿Úº¯Êı
- * @param parameter Èë¿Úº¯Êı²ÎÊı
- * @param stack_size Õ»´óĞ¡
- * @param priority ÓÅÏÈ¼¶
- * @param time_slice Ê±¼äÆ¬
- * @return Ïß³Ì¿ØÖÆ¿éÖ¸Õë
+ * @brief åˆ›å»ºçº¿ç¨‹
+ * @param name çº¿ç¨‹åç§°
+ * @param entry çº¿ç¨‹å…¥å£å‡½æ•°
+ * @param parameter å…¥å£å‡½æ•°å‚æ•°
+ * @param stack_size æ ˆå¤§å°
+ * @param priority ä¼˜å…ˆçº§
+ * @param time_slice æ—¶é—´ç‰‡
+ * @return çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
  */
 ul_thread_t* ul_thread_create(const char *name,
                               void (*entry)(void *p),
@@ -112,124 +112,124 @@ ul_thread_t* ul_thread_create(const char *name,
                               ul_uint8_t time_slice);
 
 /**
- * @brief »ñÈ¡µ±Ç°Ïß³Ì
- * @return µ±Ç°Ïß³Ì¿ØÖÆ¿éÖ¸Õë
+ * @brief è·å–å½“å‰çº¿ç¨‹
+ * @return å½“å‰çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
  */
 ul_thread_t *ul_thread_self(void);
 
 /**
- * @brief »ñÈ¡Ïß³ÌÊ£ÓàÕ»¿Õ¼ä
- * @param thread Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @return Ê£ÓàÕ»´óĞ¡
+ * @brief è·å–çº¿ç¨‹å‰©ä½™æ ˆç©ºé—´
+ * @param thread çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @return å‰©ä½™æ ˆå¤§å°
  */
 ul_size_t ul_thread_stack_remain(ul_thread_t *thread);
 
 /**
- * @brief É¾³ıÏß³Ì
- * @param thread Ïß³Ì¿ØÖÆ¿éÖ¸Õë
+ * @brief åˆ é™¤çº¿ç¨‹
+ * @param thread çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
  */
 void ul_thread_delete(ul_thread_t *thread);
 
 /**
- * @brief ²éÕÒÏß³Ì¶ÔÏó
+ * @brief æŸ¥æ‰¾çº¿ç¨‹å¯¹è±¡
  */
 ul_thread_t* ul_thread_find(const char *name);
-/* ==================== Ïß³Ì¿ØÖÆº¯Êı ==================== */
+/* ==================== çº¿ç¨‹æ§åˆ¶å‡½æ•° ==================== */
 
 /**
- * @brief Æô¶¯Ïß³Ì
- * @param self Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief å¯åŠ¨çº¿ç¨‹
+ * @param self çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_thread_startup(struct ul_thread *self);
 
 /**
- * @brief ÉèÖÃÏß³ÌÓÅÏÈ¼¶
- * @param thread Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @param priority ĞÂµÄÓÅÏÈ¼¶Öµ
- * @return ´íÎóÂë
+ * @brief è®¾ç½®çº¿ç¨‹ä¼˜å…ˆçº§
+ * @param thread çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @param priority æ–°çš„ä¼˜å…ˆçº§å€¼
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_thread_control_set_priority(struct ul_thread *thread, ul_uint8_t priority);
 
 /**
- * @brief »ñÈ¡Ïß³ÌÓÅÏÈ¼¶
- * @param thread Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @return Ïß³ÌÓÅÏÈ¼¶
+ * @brief è·å–çº¿ç¨‹ä¼˜å…ˆçº§
+ * @param thread çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @return çº¿ç¨‹ä¼˜å…ˆçº§
  */
 ul_uint8_t ul_thread_control_get_priority(struct ul_thread *thread);
 
 /**
- * @brief »Ö¸´Ïß³Ìµ½³õÊ¼ÓÅÏÈ¼¶
- * @param thread Ïß³Ì¿ØÖÆ¿éÖ¸Õë
- * @return ´íÎóÂë
+ * @brief æ¢å¤çº¿ç¨‹åˆ°åˆå§‹ä¼˜å…ˆçº§
+ * @param thread çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
+ * @return é”™è¯¯ç 
  */
 ul_ecode ul_thread_control_restore_priority(struct ul_thread *thread);
 
-/* ==================== µ÷¶ÈÆ÷º¯Êı ==================== */
+/* ==================== è°ƒåº¦å™¨å‡½æ•° ==================== */
 
 /**
- * @brief ÄÚºË³õÊ¼»¯
+ * @brief å†…æ ¸åˆå§‹åŒ–
  */
 void ul_kernel_init(void);
 
 /**
- * @brief Æô¶¯µ÷¶ÈÆ÷
+ * @brief å¯åŠ¨è°ƒåº¦å™¨
  */
 void ul_scheduler_start(void);
 
 /**
- * @brief ÈÎÎñµ÷¶Èº¯Êı
+ * @brief ä»»åŠ¡è°ƒåº¦å‡½æ•°
  */
 void ul_schedule(void);
 
-/* ==================== Ê±¼äÏà¹Øº¯Êı ==================== */
+/* ==================== æ—¶é—´ç›¸å…³å‡½æ•° ==================== */
 
 /**
- * @brief ÏµÍ³Ê±ÖÓÖĞ¶Ï´¦Àíº¯Êı
+ * @brief ç³»ç»Ÿæ—¶é’Ÿä¸­æ–­å¤„ç†å‡½æ•°
  */
 void ul_tick_increase(void);
 
 /**
- * @brief »ñÈ¡ÏµÍ³Ê±ÖÓ
- * @return µ±Ç°ÏµÍ³Ê±ÖÓÖµ
+ * @brief è·å–ç³»ç»Ÿæ—¶é’Ÿ
+ * @return å½“å‰ç³»ç»Ÿæ—¶é’Ÿå€¼
  */
 ul_tick_t ulOS_get_tick(void);
 
 /**
- * @brief Ïß³ÌÑÓÊ±
- * @param xTicksToDelay ÑÓÊ±tickÊı
+ * @brief çº¿ç¨‹å»¶æ—¶
+ * @param xTicksToDelay å»¶æ—¶tickæ•°
  */
 void ul_thread_delay(ul_tick_t xTicksToDelay);
 
 /**
- * @brief ¾«È·ÑÓÊ±
- * @param pxPreviousWakeTime ÉÏ´Î»½ĞÑÊ±¼äÖ¸Õë
- * @param xTimeIncrement Ê±¼äÔöÁ¿
+ * @brief ç²¾ç¡®å»¶æ—¶
+ * @param pxPreviousWakeTime ä¸Šæ¬¡å”¤é†’æ—¶é—´æŒ‡é’ˆ
+ * @param xTimeIncrement æ—¶é—´å¢é‡
  */
 void ul_thread_delay_until(ul_tick_t *const pxPreviousWakeTime, 
                            const ul_tick_t xTimeIncrement);
 
 /**
- * @brief ¹ÒÆğÏß³Ì
- * @param self Ïß³Ì¿ØÖÆ¿éÖ¸Õë
+ * @brief æŒ‚èµ·çº¿ç¨‹
+ * @param self çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
  */
 void ul_thread_suspend(struct ul_thread *self);
 
 /**
- * @brief »Ö¸´Ïß³Ì
- * @param self Ïß³Ì¿ØÖÆ¿éÖ¸Õë
+ * @brief æ¢å¤çº¿ç¨‹
+ * @param self çº¿ç¨‹æ§åˆ¶å—æŒ‡é’ˆ
  */
 void ul_thread_resume(struct ul_thread *self);
 
-/* ==================== ÁÙ½çÇøº¯Êı ==================== */
+/* ==================== ä¸´ç•ŒåŒºå‡½æ•° ==================== */
 
 /**
- * @brief ½øÈëÁÙ½çÇø
+ * @brief è¿›å…¥ä¸´ç•ŒåŒº
  */
 void ul_enter_critical(void);
 
 /**
- * @brief ÍË³öÁÙ½çÇø
+ * @brief é€€å‡ºä¸´ç•ŒåŒº
  */
 void ul_exit_critical(void);
 

@@ -27,7 +27,7 @@ static void idle_thread_entry(void *p)
     while (1)
     {
 //        {
-//            // CPUÊ¹ÓÃÂÊÍ³¼Æ
+//            // CPUä½¿ç”¨ç‡ç»Ÿè®¡
 //            if (ulOS_tick - last_tick >= 1)
 //            {
 //                idle_count++;

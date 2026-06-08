@@ -6,7 +6,7 @@
  * Change Logs:
  * Date           Author       Notes
  * 2025-11-01     zhuqinsheng   the first version
- * 2025-12-3      zhuqinsheng   优化对象名字查找
+ * 2025-12-3      zhuqinsheng   浼樺寲瀵硅薄鍚嶅瓧鏌ユ壘
  */
 #include "ul_object.h"
 #include "ul_libc.h"

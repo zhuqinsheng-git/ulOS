@@ -7,11 +7,11 @@
 
 #include "ulOS_thread.h"
 
-#define  BSP_TIMER_RCU        RCU_TIMER5  // ¶¨Ê±Æ÷Ê±ÖÓ
-#define  BSP_TIMER            TIMER5   // ¶¨Ê±Æ÷
-#define  BSP_TIMER_IRQ        TIMER5_IRQn // ¶¨Ê±Æ÷ÖĞ¶Ï
+#define  BSP_TIMER_RCU        RCU_TIMER5  // å®šæ—¶å™¨æ—¶é’Ÿ
+#define  BSP_TIMER            TIMER5   // å®šæ—¶å™¨
+#define  BSP_TIMER_IRQ        TIMER5_IRQn // å®šæ—¶å™¨ä¸­æ–­
 
-#define  BSP_TIMER_IRQHandler TIMER5_IRQHandler// ¶¨Ê±Æ÷ÖĞ¶Ï·şÎñº¯Êı
+#define  BSP_TIMER_IRQHandler TIMER5_IRQHandler// å®šæ—¶å™¨ä¸­æ–­æœåŠ¡å‡½æ•°
 
 #define  BSP_LED1_RCU     RCU_GPIOC
 #define  BSP_LED1_PORT    GPIOC
@@ -25,7 +25,7 @@ void thread1_entry(void *p)
 {
     while(1)
     {
-        gpio_bit_toggle(BSP_LED1_PORT,BSP_LED1_PIN); // ·­×ªled
+        gpio_bit_toggle(BSP_LED1_PORT,BSP_LED1_PIN); // ç¿»è½¬led
         ul_thread_delay(100);
     }
 }
@@ -34,7 +34,7 @@ void thread2_entry(void *p)
 {
     while(1)
     {
-        gpio_bit_toggle(BSP_LED2_PORT,BSP_LED2_PIN); // ·­×ªled
+        gpio_bit_toggle(BSP_LED2_PORT,BSP_LED2_PIN); // ç¿»è½¬led
         ul_thread_delay(500);
     }
 }
@@ -65,30 +65,30 @@ int main(void)
     gpio_mode_set(BSP_LED2_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BSP_LED2_PIN);
     gpio_output_options_set(BSP_LED2_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BSP_LED2_PIN);
     
-    /* ¿ªÆôÊ±ÖÓ */
-    rcu_periph_clock_enable(BSP_TIMER_RCU); // ¿ªÆô¶¨Ê±Æ÷Ê±ÖÓ
-    timer_deinit(BSP_TIMER); // ¸´Î»¶¨Ê±Æ÷
+    /* å¼€å¯æ—¶é’Ÿ */
+    rcu_periph_clock_enable(BSP_TIMER_RCU); // å¼€å¯å®šæ—¶å™¨æ—¶é’Ÿ
+    timer_deinit(BSP_TIMER); // å¤ä½å®šæ—¶å™¨
     
-    timer_parameter_struct timer_initpara; // ¶¨Òå¶¨Ê±Æ÷½á¹¹Ìå
-    /* ÅäÖÃ¶¨Ê±Æ÷²ÎÊı */
-    timer_initpara.prescaler = 2 -1; //  Ê±ÖÓÔ¤·ÖÆµÖµ 0-65535  psc_clk = CK_TIMER / pre
-    timer_initpara.alignedmode = TIMER_COUNTER_EDGE; // ±ßÔµ¶ÔÆë£¨Ã»ÓÃµ½£©
-    timer_initpara.counterdirection = TIMER_COUNTER_UP; // ÏòÉÏ¼ÆÊı
-    timer_initpara.period = 36000  - 1; // ÖÜÆÚ
-    /* ÔÚÊäÈë²¶»ñµÄÊ±ºòÊ¹ÓÃ  Êı×ÖÂË²¨Æ÷Ê¹ÓÃµÄ²ÉÑùÆµÂÊÖ®¼äµÄ·ÖÆµ±ÈÀı */
-    timer_initpara.clockdivision = TIMER_CKDIV_DIV1; // ·ÖÆµÒò×Ó
-    /* Ö»ÓĞ¸ß¼¶¶¨Ê±Æ÷²ÅÓĞ ÅäÖÃÎªx£¬¾ÍÖØ¸´x+1´Î½øÈëÖĞ¶Ï */
-    timer_initpara.repetitioncounter = 0; // ÖØ¸´¼ÆÊıÆ÷ 0-255
-    timer_init(BSP_TIMER,&timer_initpara); // ³õÊ¼»¯¶¨Ê±Æ÷
-    /* ÅäÖÃÖĞ¶ÏÓÅÏÈ¼¶ */
-    nvic_irq_enable(BSP_TIMER_IRQ, 1);    // ÉèÖÃÖĞ¶ÏÓÅÏÈ¼¶
-    /* Ê¹ÄÜÖĞ¶Ï */
-    timer_interrupt_enable(BSP_TIMER,TIMER_INT_UP); // Ê¹ÄÜ¸üĞÂÊÂ¼şÖĞ¶Ï
-    /* Ê¹ÄÜ¶¨Ê±Æ÷ */
+    timer_parameter_struct timer_initpara; // å®šä¹‰å®šæ—¶å™¨ç»“æ„ä½“
+    /* é…ç½®å®šæ—¶å™¨å‚æ•° */
+    timer_initpara.prescaler = 2 -1; //  æ—¶é’Ÿé¢„åˆ†é¢‘å€¼ 0-65535  psc_clk = CK_TIMER / pre
+    timer_initpara.alignedmode = TIMER_COUNTER_EDGE; // è¾¹ç¼˜å¯¹é½ï¼ˆæ²¡ç”¨åˆ°ï¼‰
+    timer_initpara.counterdirection = TIMER_COUNTER_UP; // å‘ä¸Šè®¡æ•°
+    timer_initpara.period = 36000  - 1; // å‘¨æœŸ
+    /* åœ¨è¾“å…¥æ•è·çš„æ—¶å€™ä½¿ç”¨  æ•°å­—æ»¤æ³¢å™¨ä½¿ç”¨çš„é‡‡æ ·é¢‘ç‡ä¹‹é—´çš„åˆ†é¢‘æ¯”ä¾‹ */
+    timer_initpara.clockdivision = TIMER_CKDIV_DIV1; // åˆ†é¢‘å› å­
+    /* åªæœ‰é«˜çº§å®šæ—¶å™¨æ‰æœ‰ é…ç½®ä¸ºxï¼Œå°±é‡å¤x+1æ¬¡è¿›å…¥ä¸­æ–­ */
+    timer_initpara.repetitioncounter = 0; // é‡å¤è®¡æ•°å™¨ 0-255
+    timer_init(BSP_TIMER,&timer_initpara); // åˆå§‹åŒ–å®šæ—¶å™¨
+    /* é…ç½®ä¸­æ–­ä¼˜å…ˆçº§ */
+    nvic_irq_enable(BSP_TIMER_IRQ, 1);    // è®¾ç½®ä¸­æ–­ä¼˜å…ˆçº§
+    /* ä½¿èƒ½ä¸­æ–­ */
+    timer_interrupt_enable(BSP_TIMER,TIMER_INT_UP); // ä½¿èƒ½æ›´æ–°äº‹ä»¶ä¸­æ–­
+    /* ä½¿èƒ½å®šæ—¶å™¨ */
     timer_enable(BSP_TIMER);
     
     
-    // ÅäÖÃPC13Òı½Å×ª»¯´úÂëÎª
+    // é…ç½®PC13å¼•è„šè½¬åŒ–ä»£ç ä¸º
     
     ul_kernel_init();
     
@@ -102,11 +102,11 @@ int main(void)
     }   
 }
 
-// 1ms¶¨Ê±Æ÷
+// 1mså®šæ—¶å™¨
 void BSP_TIMER_IRQHandler(void){
     if(timer_interrupt_flag_get(BSP_TIMER,TIMER_INT_FLAG_UP) == SET)
     {
-        timer_interrupt_flag_clear(BSP_TIMER,TIMER_INT_FLAG_UP); // Çå³ıÖĞ¶Ï±êÖ¾Î»
+        timer_interrupt_flag_clear(BSP_TIMER,TIMER_INT_FLAG_UP); // æ¸…é™¤ä¸­æ–­æ ‡å¿—ä½
 
         ul_tick_increase();
     }

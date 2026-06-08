@@ -5,20 +5,20 @@ static ul_thread_t *thread1;
 static void thread1_entry(void *parameter)
 { 
     int i;
-    char *ptr = UL_NULL; /* ÄÚ´æ¿éµÄÖ¸Õë */
+    char *ptr = UL_NULL; /* å†…å­˜å—çš„æŒ‡é’ˆ */
     
     ul_kprintf("ulOS heap total size :%d byte\r\n", ul_heap_get_total_size());
     
     for (i = 0; ; i++)
     {
-        /* Ã¿´Î·ÖÅä (1 << i) ´óĞ¡×Ö½ÚÊıµÄÄÚ´æ¿Õ¼ä */
+        /* æ¯æ¬¡åˆ†é… (1 << i) å¤§å°å­—èŠ‚æ•°çš„å†…å­˜ç©ºé—´ */
         ptr = ul_malloc(1 << i);
 
-        /* Èç¹û·ÖÅä³É¹¦ */
+        /* å¦‚æœåˆ†é…æˆåŠŸ */
         if (ptr != UL_NULL)
         {
             ul_kprintf("get memory :%d byte\r\n", (1 << i));
-            /* ÊÍ·ÅÄÚ´æ¿é */
+            /* é‡Šæ”¾å†…å­˜å— */
             ul_free(ptr);
             ul_kprintf("free memory :%d byte\r\n", (1 << i));
             ptr = UL_NULL;
@@ -32,7 +32,7 @@ static void thread1_entry(void *parameter)
     }
 }
 
-/* ²âÊÔº¯Êı */
+/* æµ‹è¯•å‡½æ•° */
 void example_dynamic_memmory(void)
 {
     thread1 = ul_thread_create("ul_malloc_t1",

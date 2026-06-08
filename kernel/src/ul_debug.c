@@ -13,7 +13,7 @@
 #include <stdarg.h>
 
 #if ( ULOS_CONFIG_USE_KERNEL_PRINTF == 1 )
-// ĞèÒªÓÃ»§ÊµÏÖ ul_kwrite º¯Êı
+// éœ€è¦ç”¨æˆ·å®ç° ul_kwrite å‡½æ•°
 // example:
 //int ul_kwrite(const char *buf, size_t len)
 //{
@@ -33,10 +33,10 @@ void ul_kprintf(const char *fmt, ...)
     va_list args;
     va_start(args, fmt);
     
-    // Ö±½Ó¸ñÊ½»¯µ½»º³åÇø
+    // ç›´æ¥æ ¼å¼åŒ–åˆ°ç¼“å†²åŒº
     int len = vsnprintf(g_kprintf_buf, sizeof(g_kprintf_buf), fmt, args);
     
-    // Ò»´ÎĞÔÊä³öÕû¸ö×Ö·û´®
+    // ä¸€æ¬¡æ€§è¾“å‡ºæ•´ä¸ªå­—ç¬¦ä¸²
     ul_kwrite(g_kprintf_buf, len);
     
     va_end(args);
@@ -50,11 +50,11 @@ void ul_kprintf(const char *fmt, ...)
 void ul_assert_handler(const char *expr, const char *func, int line)
 {
     volatile char fake = 0;
-    // Êä³öµ½´®¿Ú
+    // è¾“å‡ºåˆ°ä¸²å£
     ul_kprintf("\n!!! ASSERTION FAILED !!!\n");
-    ul_kprintf("File: %s\n", func);    // º¯ÊıÃû
-    ul_kprintf("Line: %d\n", line);    // ĞĞºÅ
-    ul_kprintf("Expr: %s\n", expr);    // Ê§°ÜµÄ±í´ïÊ½ ¡û #EX Ìá¹©
+    ul_kprintf("File: %s\n", func);    // å‡½æ•°å
+    ul_kprintf("Line: %d\n", line);    // è¡Œå·
+    ul_kprintf("Expr: %s\n", expr);    // å¤±è´¥çš„è¡¨è¾¾å¼ â† #EX æä¾›
     
     while(1) 
     {

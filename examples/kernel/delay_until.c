@@ -12,7 +12,7 @@ static void thread1_entry(void *parameter)
     {
         ul_kprintf("[1]delay_thread running...ulOS tick:%d\r\n", (int)ulOS_get_tick());
         
-        for(i = 0; i < 100000; i++);    // 模拟运行耗时
+        for(i = 0; i < 100000; i++);    // 妯℃嫙杩愯鑰楁椂
         
         ul_thread_delay(500);  
         
@@ -34,7 +34,7 @@ static void thread2_entry(void *parameter)
     {
         ul_kprintf("[2]delay_until_thread running...ulOS tick:%d\r\n", (int)ulOS_get_tick());
         
-        for(i = 0; i < 100000; i++);    // 模拟运行耗时
+        for(i = 0; i < 100000; i++);    // 妯℃嫙杩愯鑰楁椂
         
         ul_thread_delay_until(&last_wake_time, 500);
         
@@ -45,7 +45,7 @@ static void thread2_entry(void *parameter)
     return;
 }
 
-/* 测试函数 */
+/* 娴嬭瘯鍑芥暟 */
 void example_delay_until(void)
 {
     thread1 = ul_thread_create("du_t1",
